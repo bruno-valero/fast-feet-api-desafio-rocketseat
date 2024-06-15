@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  postgres:
+    container_name: nest-clean-pg
+    image: bitnami/postgresql
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRESQL_USERNAME=postgres
+      - POSTGRESQL_PASSWORD=docker
+      - POSTGRESQL_DATABASE=nest-clean
+      - PG_DATA=/data/postgres
+    volumes:
+      - ./data/pg:/data/postgres
+
+  # cache:
+  #   container_name: nest-clean-cache
+  #   image: bitnami/redis
+  #   ports:
+  #     - 6379:6379
+  #   environment:
+  #     - ALLOW_EMPTY_PASSWORD=yes
+  #     # - REDIS_DATABASE=0
+  #     # - REDIS_MASTER_PORT_NUMBER=6379
+  #   volumes:
+  #     - ./data/redis:/data

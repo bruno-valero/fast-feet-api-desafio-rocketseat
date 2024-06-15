@@ -1,0 +1,16 @@
+{
+  "cSpell.words": ["Rocketseat"],
+  "workbench.colorTheme": "Dracula",
+  "workbench.iconTheme": "material-icon-theme",
+  "editor.fontSize": 18,
+  "explorer.compactFolders": false,
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.organizeImports": "never",
+    "source.fixAll.eslint": "always"
+  },
+  "prisma.showPrismaDataPlatformNotification": false,
+  "[prisma]": {
+    "editor.formatOnSave": true
+  }
+}
