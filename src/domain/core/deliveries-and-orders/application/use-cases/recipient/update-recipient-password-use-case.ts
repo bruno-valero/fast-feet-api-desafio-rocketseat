@@ -7,6 +7,7 @@ import UniqueEntityId from '@/core/entities/unique-entity-id'
 import { RecipientUpdatesRepository } from '../../repositories/recipient-repositories/recipient-updates-repository'
 import { Encrypter } from '../../cryptography/encrypter'
 import { RecipientsRepository } from '../../repositories/recipient-repositories/recipients-repository'
+import { Injectable } from '@nestjs/common'
 
 export interface UpdateRecipientPasswordUseCaseRequest {
   recipientId: string
@@ -19,6 +20,7 @@ export type UpdateRecipientPasswordUseCaseResponse = Either<
   null
 >
 
+@Injectable()
 export class UpdateRecipientPasswordUseCase {
   constructor(
     private recipientsRepository: RecipientsRepository,

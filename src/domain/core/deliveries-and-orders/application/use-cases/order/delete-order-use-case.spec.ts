@@ -1,70 +1,76 @@
+import UniqueEntityId from '@/core/entities/unique-entity-id'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { makeAdm } from 'test/factories/entities/makeAdm'
-import { makeRegisterCourierUseCase } from 'test/factories/use-cases/auth-and-register/make-register-courier-use-case'
-import { makeDeleteCourierUseCase } from 'test/factories/use-cases/courier/make-delete-courier-use-case'
+import { makeAddress } from 'test/factories/entities/value-objects/makeAddress'
+import { makeCreateOrderUseCase } from 'test/factories/use-cases/order/make-create-order-use-case'
+import { makeDeleteOrderUseCase } from 'test/factories/use-cases/order/make-delete-order-use-case'
 
-describe('delete courier use case', () => {
-  let createCourier = makeRegisterCourierUseCase()
-  let sut = makeDeleteCourierUseCase({
-    admsRepositoryAlt: createCourier.dependencies.admsRepository,
-    couriersRepositoryAlt: createCourier.dependencies.couriersRepository,
+describe('delete order use case', () => {
+  let createOrder = makeCreateOrderUseCase()
+  let sut = makeDeleteOrderUseCase({
+    admsRepositoryAlt: createOrder.dependencies.admsRepository,
+    ordersRepositoryAlt: createOrder.dependencies.ordersRepository,
   })
   beforeEach(() => {
-    createCourier = makeRegisterCourierUseCase()
-    sut = makeDeleteCourierUseCase({
-      admsRepositoryAlt: createCourier.dependencies.admsRepository,
-      couriersRepositoryAlt: createCourier.dependencies.couriersRepository,
+    createOrder = makeCreateOrderUseCase()
+    sut = makeDeleteOrderUseCase({
+      admsRepositoryAlt: createOrder.dependencies.admsRepository,
+      ordersRepositoryAlt: createOrder.dependencies.ordersRepository,
     })
   })
 
-  it('should be able to delete a courier', async () => {
+  it('should be able to delete a order', async () => {
     await sut.dependencies.admsRepository.create(makeAdm())
 
     const adm = (await sut.dependencies.admsRepository.findMany())[0]
 
-    await createCourier.useCase.execute({
-      cpf: '44411166677',
-      name: 'bruno',
-      password: '123',
+    await createOrder.useCase.execute({
       requestResponsibleId: adm.id.value,
+      creationProps: {
+        address: makeAddress(),
+        courierId: new UniqueEntityId('123'),
+        recipientId: new UniqueEntityId('1188'),
+      },
     })
 
-    const courier = (await sut.dependencies.couriersRepository.findMany())[0]
+    const order = (await sut.dependencies.ordersRepository.findMany())[0]
 
     const sutResp = await sut.useCase.execute({
-      courierId: courier.id.value,
+      orderId: order.id.value,
       requestResponsibleId: adm.id.value,
     })
 
-    const couriers = await sut.dependencies.couriersRepository.findMany()
+    const orders = await sut.dependencies.ordersRepository.findMany()
 
     expect(sutResp.isRight()).toBeTruthy()
-    expect(couriers).toHaveLength(0)
+    expect(orders).toHaveLength(0)
   })
 
-  it('should not be able to delete a courier if the action is not made by an adm', async () => {
+  it('should not be able to delete a order if the action is not made by an adm', async () => {
     await sut.dependencies.admsRepository.create(makeAdm())
 
     const adm = (await sut.dependencies.admsRepository.findMany())[0]
 
-    await createCourier.useCase.execute({
-      cpf: '44411166677',
-      name: 'bruno',
-      password: '123',
+    await createOrder.useCase.execute({
       requestResponsibleId: adm.id.value,
+      creationProps: {
+        address: makeAddress(),
+        courierId: new UniqueEntityId('123'),
+        recipientId: new UniqueEntityId('1188'),
+      },
     })
 
-    const courier = (await sut.dependencies.couriersRepository.findMany())[0]
+    const order = (await sut.dependencies.ordersRepository.findMany())[0]
 
     const sutResp = await sut.useCase.execute({
-      courierId: courier.id.value,
+      orderId: order.id.value,
       requestResponsibleId: 'any Id',
     })
 
-    const couriers = await sut.dependencies.couriersRepository.findMany()
+    const orders = await sut.dependencies.ordersRepository.findMany()
 
     expect(sutResp.isLeft()).toBeTruthy()
     expect(sutResp.value).toBeInstanceOf(ResourceNotFoundError)
-    expect(couriers).toHaveLength(1)
+    expect(orders).toHaveLength(1)
   })
 })

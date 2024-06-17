@@ -5,6 +5,7 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { AdmsRepository } from '../../repositories/adm-repositories/adms-repository'
 import { Order } from '../../../enterprise/entities/order'
 import { OrdersRepository } from '../../repositories/order-repositories/orders-repository'
+import { Injectable } from '@nestjs/common'
 
 export interface FetchOrdersUseCaseRequest {
   requestResponsibleId: string
@@ -15,6 +16,7 @@ export type FetchOrdersUseCaseResponse = Either<
   { orders: Order[] }
 >
 
+@Injectable()
 export class FetchOrdersUseCase {
   constructor(
     private ordersRepository: OrdersRepository,

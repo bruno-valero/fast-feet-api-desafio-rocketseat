@@ -7,6 +7,7 @@ import { Recipient } from '../../../../enterprise/entities/recipient'
 import { Cpf } from '../../../../enterprise/entities/value-objects/cpf'
 import { Encrypter } from '../../../cryptography/encrypter'
 import { RecipientsRepository } from '../../../repositories/recipient-repositories/recipients-repository'
+import { Injectable } from '@nestjs/common'
 
 export interface RegisterRecipientUseCaseRequest {
   name: string
@@ -20,6 +21,7 @@ export type RegisterRecipientUseCaseResponse = Either<
   null
 >
 
+@Injectable()
 export class RegisterRecipientUseCase {
   constructor(
     private recipientsRepository: RecipientsRepository,

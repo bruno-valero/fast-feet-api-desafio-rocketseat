@@ -6,12 +6,13 @@ import { CouriersRepository } from '../../repositories/courier-repositories/cour
 import { AdmsRepository } from '../../repositories/adm-repositories/adms-repository'
 import UniqueEntityId from '@/core/entities/unique-entity-id'
 import { CourierUpdatesRepository } from '../../repositories/courier-repositories/courier-updates-repository'
+import { Injectable } from '@nestjs/common'
 
 export interface UpdateCourierUseCaseRequest {
   courierId: string
   name: string
   cpf: string
-  admId: string
+  requestResponsibleId: string
 }
 
 export type UpdateCourierUseCaseResponse = Either<
@@ -19,6 +20,7 @@ export type UpdateCourierUseCaseResponse = Either<
   null
 >
 
+@Injectable()
 export class UpdateCourierUseCase {
   constructor(
     private couriersRepository: CouriersRepository,
@@ -30,9 +32,9 @@ export class UpdateCourierUseCase {
     courierId,
     cpf,
     name,
-    admId,
+    requestResponsibleId,
   }: UpdateCourierUseCaseRequest): Promise<UpdateCourierUseCaseResponse> {
-    const adm = await this.admsRepository.findById(admId)
+    const adm = await this.admsRepository.findById(requestResponsibleId)
     if (!adm) return left(new ResourceNotFoundError())
 
     const hasPermission = Permissions.hasPermission('update_courier', adm.role)
@@ -43,7 +45,7 @@ export class UpdateCourierUseCase {
 
     const { data: update } = courier.changeData(
       { cpf, name },
-      new UniqueEntityId(admId),
+      new UniqueEntityId(requestResponsibleId),
     )
     await this.couriersRepository.update(courier)
     await this.courierUpdatesRepository.create(update)

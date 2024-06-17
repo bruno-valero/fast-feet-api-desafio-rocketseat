@@ -20,4 +20,20 @@ export class Attachment extends Entity<AttachmentProps> {
       id,
     )
   }
+
+  setOrderId(orderId: string) {
+    this.props.orderId = new UniqueEntityId(orderId)
+  }
+
+  get title() {
+    return this.props.title
+  }
+
+  get url() {
+    return this.props.url
+  }
+
+  get orderId() {
+    return this.props.orderId
+  }
 }

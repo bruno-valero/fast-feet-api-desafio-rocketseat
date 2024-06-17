@@ -4,6 +4,7 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { Encrypter } from '../../../cryptography/encrypter'
 import { CouriersRepository } from '../../../repositories/courier-repositories/courier-repository'
 import { Encoder } from '../../../cryptography/encoder'
+import { Injectable } from '@nestjs/common'
 
 export interface AuthenticateCourierUseCaseRequest {
   cpf: string
@@ -17,6 +18,7 @@ export type AuthenticateCourierUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class AuthenticateCourierUseCase {
   constructor(
     private couriersRepository: CouriersRepository,
