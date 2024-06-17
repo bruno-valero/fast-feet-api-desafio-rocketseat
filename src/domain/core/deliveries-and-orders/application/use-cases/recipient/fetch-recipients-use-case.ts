@@ -5,6 +5,7 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { AdmsRepository } from '../../repositories/adm-repositories/adms-repository'
 import { Recipient } from '../../../enterprise/entities/recipient'
 import { RecipientsRepository } from '../../repositories/recipient-repositories/recipients-repository'
+import { Injectable } from '@nestjs/common'
 
 export interface FetchRecipientsUseCaseRequest {
   requestResponsibleId: string
@@ -15,6 +16,7 @@ export type FetchRecipientsUseCaseResponse = Either<
   { recipients: Recipient[] }
 >
 
+@Injectable()
 export class FetchRecipientsUseCase {
   constructor(
     private recipientsRepository: RecipientsRepository,

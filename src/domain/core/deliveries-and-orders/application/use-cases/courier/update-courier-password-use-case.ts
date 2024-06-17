@@ -7,6 +7,7 @@ import { AdmsRepository } from '../../repositories/adm-repositories/adms-reposit
 import UniqueEntityId from '@/core/entities/unique-entity-id'
 import { CourierUpdatesRepository } from '../../repositories/courier-repositories/courier-updates-repository'
 import { Encrypter } from '../../cryptography/encrypter'
+import { Injectable } from '@nestjs/common'
 
 export interface UpdateCourierPasswordUseCaseRequest {
   courierId: string
@@ -19,6 +20,7 @@ export type UpdateCourierPasswordUseCaseResponse = Either<
   null
 >
 
+@Injectable()
 export class UpdateCourierPasswordUseCase {
   constructor(
     private couriersRepository: CouriersRepository,

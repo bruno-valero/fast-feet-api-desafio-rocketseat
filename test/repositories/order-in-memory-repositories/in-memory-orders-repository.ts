@@ -1,5 +1,7 @@
+import { DomainEvents } from '@/core/events/domain-events'
 import { OrdersRepository } from '@/domain/core/deliveries-and-orders/application/repositories/order-repositories/orders-repository'
 import { Order } from '@/domain/core/deliveries-and-orders/enterprise/entities/order'
+import { Coordinates } from '@/domain/core/deliveries-and-orders/enterprise/entities/value-objects/coordinates'
 
 export class InMemoryOrdersRepository extends OrdersRepository {
   items: Order[] = []
@@ -13,6 +15,8 @@ export class InMemoryOrdersRepository extends OrdersRepository {
     if (index >= 0) {
       this.items[index] = order
     }
+
+    DomainEvents.dispatchEventsForAggregate(order.id)
   }
 
   async delete(id: string): Promise<void> {
@@ -35,9 +39,25 @@ export class InMemoryOrdersRepository extends OrdersRepository {
     return orders
   }
 
+  async findManyNearBy(coordinates: Coordinates): Promise<Order[]> {
+    const orders = this.items.filter(
+      (item) => item.address.coordinates.getDistance(coordinates) <= 10,
+    )
+
+    return orders
+  }
+
   async findManyByCourierId(courierId: string): Promise<Order[]> {
     const orders = this.items.filter(
-      (item) => !item.courierId?.value || item.courierId?.value === courierId,
+      (item) => item.courierId?.value === courierId,
+    )
+
+    return orders
+  }
+
+  async findManyByRecipientId(recipientId: string): Promise<Order[]> {
+    const orders = this.items.filter(
+      (item) => item.recipientId?.value === recipientId,
     )
 
     return orders

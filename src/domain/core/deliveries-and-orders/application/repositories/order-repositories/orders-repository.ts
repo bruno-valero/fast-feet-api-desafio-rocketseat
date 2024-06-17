@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common'
 import { Order } from '../../../enterprise/entities/order'
+import { Coordinates } from '../../../enterprise/entities/value-objects/coordinates'
 
 @Injectable()
 export abstract class OrdersRepository {
@@ -8,5 +9,7 @@ export abstract class OrdersRepository {
   abstract delete(id: string): Promise<void>
   abstract findById(id: string): Promise<Order | null>
   abstract findMany(): Promise<Order[]>
+  abstract findManyNearBy(coordinates: Coordinates): Promise<Order[]>
   abstract findManyByCourierId(courierId: string): Promise<Order[]>
+  abstract findManyByRecipientId(recipientId: string): Promise<Order[]>
 }

@@ -15,6 +15,8 @@ import { OrderCourierReturnedEvent } from '../events/order-courier-returned-even
 import { UpdateOrder } from './update-order'
 import { OrderAttachment } from './order-attachment'
 import { OrderAlreadyReturnedError } from '@/core/errors/errors/order-errors/order-already-returned-error copy'
+import { OrderNotAwaitingPickupError } from '@/core/errors/errors/order-errors/order-not-awaiting-for-pickup-error'
+import { OrderWasNotCollectedError } from '@/core/errors/errors/order-errors/order-was-not-collected-error'
 
 export interface OrderProps {
   recipientId: UniqueEntityId
@@ -32,6 +34,7 @@ export interface OrderProps {
 
 export type OrderCreateProps = Optional<
   OrderProps,
+  | 'awaitingPickup'
   | 'collected'
   | 'returned'
   | 'returnCause'
@@ -65,6 +68,7 @@ export class Order extends AggregateRoot<OrderProps> {
         ...props,
         delivered: props.delivered ?? null,
         deliveredPhoto: props.deliveredPhoto ?? null,
+        awaitingPickup: props.awaitingPickup ?? null,
         collected: props.collected ?? null,
         returned: props.returned ?? null,
         returnCause: props.returnCause ?? null,
@@ -161,12 +165,12 @@ export class Order extends AggregateRoot<OrderProps> {
 
   private admCollected(
     updatedBy: UniqueEntityId,
-  ): UpdateOrderReturn<OrderAwaitingPickupError | OrderIsClosedError> {
+  ): UpdateOrderReturn<OrderNotAwaitingPickupError | OrderIsClosedError> {
     const awaitingPickup = !!this.props.awaitingPickup
     const isOrderClosed = this.isOrderClosed
 
-    if (awaitingPickup) return { error: new OrderAwaitingPickupError() }
     if (isOrderClosed) return { error: new OrderIsClosedError() }
+    if (!awaitingPickup) return { error: new OrderNotAwaitingPickupError() }
 
     const updateOrder = this.update(() => {
       this.props.collected = new Date()
@@ -179,16 +183,12 @@ export class Order extends AggregateRoot<OrderProps> {
   private admReturned(
     returnCause: string,
     updatedBy: UniqueEntityId,
-  ): UpdateOrderReturn<
-    | OrderAwaitingPickupError
-    | OrderAlreadyReturnedError
-    | OrderNotDeliveredError
-  > {
-    const awaitingPickup = !!this.props.awaitingPickup
+  ): UpdateOrderReturn<OrderAlreadyReturnedError | OrderNotDeliveredError> {
+    const collected = !!this.props.collected
     const delivered = !!this.props.delivered
     const returned = !!this.props.returned
 
-    if (awaitingPickup) return { error: new OrderAwaitingPickupError() }
+    if (!collected) return { error: new OrderWasNotCollectedError() }
     if (returned) return { error: new OrderAlreadyReturnedError() }
     if (!delivered) return { error: new OrderNotDeliveredError() }
 
@@ -230,11 +230,11 @@ export class Order extends AggregateRoot<OrderProps> {
 
   private courierDeliver(
     updatedBy: UniqueEntityId,
-  ): UpdateOrderReturn<OrderAwaitingPickupError | OrderIsClosedError> {
-    const awaitingPickup = !!this.props.awaitingPickup
+  ): UpdateOrderReturn<OrderIsClosedError> {
+    const collected = !!this.props.collected
     const isOrderClosed = this.isOrderClosed
 
-    if (awaitingPickup) return { error: new OrderAwaitingPickupError() }
+    if (!collected) return { error: new OrderWasNotCollectedError() }
     if (isOrderClosed) return { error: new OrderIsClosedError() }
 
     // const canDeliver = !awaitingPickup && !isOrderClosed
@@ -253,14 +253,14 @@ export class Order extends AggregateRoot<OrderProps> {
 
   get actions() {
     // adm
-    const admSetAwaitingPickup = this.admSetAwaitingPickup
-    const admCollected = this.admCollected
-    const admReturned = this.admReturned
+    const admSetAwaitingPickup = this.admSetAwaitingPickup.bind(this)
+    const admCollected = this.admCollected.bind(this)
+    const admReturned = this.admReturned.bind(this)
 
     // courier
-    const courierAccept = this.courierAccept
-    const courierReject = this.courierReject
-    const courierDeliver = this.courierDeliver
+    const courierAccept = this.courierAccept.bind(this)
+    const courierReject = this.courierReject.bind(this)
+    const courierDeliver = this.courierDeliver.bind(this)
 
     return {
       courier: {
@@ -278,10 +278,9 @@ export class Order extends AggregateRoot<OrderProps> {
 
   get isOrderClosed() {
     const returned = !!this.props.returned
-    const collected = !!this.props.collected
     const delivered = !!this.props.delivered
 
-    const isOrderClosed = returned || collected || delivered
+    const isOrderClosed = returned || delivered
 
     return isOrderClosed
   }

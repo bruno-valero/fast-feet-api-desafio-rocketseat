@@ -4,6 +4,7 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { Encrypter } from '../../../cryptography/encrypter'
 import { Encoder } from '../../../cryptography/encoder'
 import { RecipientsRepository } from '../../../repositories/recipient-repositories/recipients-repository'
+import { Injectable } from '@nestjs/common'
 
 export interface AuthenticateRecipientUseCaseRequest {
   cpf: string
@@ -17,6 +18,7 @@ export type AuthenticateRecipientUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class AuthenticateRecipientUseCase {
   constructor(
     private recipientsRepository: RecipientsRepository,

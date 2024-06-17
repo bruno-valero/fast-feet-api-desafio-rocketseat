@@ -2,7 +2,7 @@
 
 Nesse desafio desenvolveremos uma API para controle de encomendas de uma transportadora fictícia, a FastFeet.
 
-Condira o enunciado do desafio no [Notion](https://efficient-sloth-d85.notion.site/Desafio-04-a3a2ef9297ad47b1a94f89b197274ffd)
+Confira o enunciado do desafio no [Notion](https://efficient-sloth-d85.notion.site/Desafio-04-a3a2ef9297ad47b1a94f89b197274ffd)
 
 ## Etapa Atual
 

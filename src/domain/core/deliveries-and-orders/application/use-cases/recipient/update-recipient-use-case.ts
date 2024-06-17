@@ -6,6 +6,7 @@ import { AdmsRepository } from '../../repositories/adm-repositories/adms-reposit
 import UniqueEntityId from '@/core/entities/unique-entity-id'
 import { RecipientUpdatesRepository } from '../../repositories/recipient-repositories/recipient-updates-repository'
 import { RecipientsRepository } from '../../repositories/recipient-repositories/recipients-repository'
+import { Injectable } from '@nestjs/common'
 
 export interface UpdateRecipientUseCaseRequest {
   recipientId: string
@@ -19,6 +20,7 @@ export type UpdateRecipientUseCaseResponse = Either<
   null
 >
 
+@Injectable()
 export class UpdateRecipientUseCase {
   constructor(
     private recipientsRepository: RecipientsRepository,

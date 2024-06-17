@@ -4,6 +4,7 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { Encrypter } from '../../../cryptography/encrypter'
 import { Encoder } from '../../../cryptography/encoder'
 import { AdmsRepository } from '../../../repositories/adm-repositories/adms-repository'
+import { Injectable } from '@nestjs/common'
 
 export interface AuthenticateAdmUseCaseRequest {
   cpf: string
@@ -17,6 +18,7 @@ export type AuthenticateAdmUseCaseResponse = Either<
   }
 >
 
+@Injectable()
 export class AuthenticateAdmUseCase {
   constructor(
     private admsRepository: AdmsRepository,

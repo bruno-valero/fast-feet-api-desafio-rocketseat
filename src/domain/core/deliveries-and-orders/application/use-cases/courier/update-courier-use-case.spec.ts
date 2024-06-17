@@ -36,7 +36,7 @@ describe('update courier use case', () => {
       courierId: courier.id.value,
       cpf: '44411132112',
       name: 'bruno-2',
-      admId: adm.id.value,
+      requestResponsibleId: adm.id.value,
     })
 
     const couriers = await sut.dependencies.couriersRepository.findMany()
@@ -69,7 +69,7 @@ describe('update courier use case', () => {
       courierId: courier.id.value,
       cpf: '44411132112',
       name: 'bruno-2',
-      admId: adm.id.value,
+      requestResponsibleId: adm.id.value,
     })
 
     const updates = await sut.dependencies.courierUpdatesRepository.findMany()
@@ -97,7 +97,7 @@ describe('update courier use case', () => {
       courierId: courier.id.value,
       cpf: '44411132112',
       name: 'bruno-2',
-      admId: 'any Id',
+      requestResponsibleId: 'any Id',
     })
 
     const couriers = await sut.dependencies.couriersRepository.findMany()

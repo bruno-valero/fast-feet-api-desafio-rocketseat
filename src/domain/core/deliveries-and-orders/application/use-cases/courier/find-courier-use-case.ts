@@ -5,6 +5,7 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { CouriersRepository } from '../../repositories/courier-repositories/courier-repository'
 import { AdmsRepository } from '../../repositories/adm-repositories/adms-repository'
 import { Courier } from '../../../enterprise/entities/courier'
+import { Injectable } from '@nestjs/common'
 
 export interface FindCourierUseCaseRequest {
   requestResponsibleId: string
@@ -16,6 +17,7 @@ export type FindCourierUseCaseResponse = Either<
   { courier: Courier }
 >
 
+@Injectable()
 export class FindCourierUseCase {
   constructor(
     private couriersRepository: CouriersRepository,
