@@ -2,14 +2,14 @@ version: "3.8"
 
 services:
   postgres:
-    container_name: nest-clean-pg
+    container_name: fast-feet-pg
     image: bitnami/postgresql
     ports:
       - 5432:5432
     environment:
       - POSTGRESQL_USERNAME=postgres
       - POSTGRESQL_PASSWORD=docker
-      - POSTGRESQL_DATABASE=nest-clean
+      - POSTGRESQL_DATABASE=fast-feet
       - PG_DATA=/data/postgres
     volumes:
       - ./data/pg:/data/postgres
