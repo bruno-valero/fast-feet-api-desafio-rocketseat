@@ -2,7 +2,7 @@ import UniqueEntityId from '@/core/entities/unique-entity-id'
 import { DomainEvent } from '@/core/events/domain-event'
 import { Order } from '../entities/order'
 
-export class OrderDeliveredEvent implements DomainEvent {
+export class OrderCourierCollectedEvent implements DomainEvent {
   ocurredAt: Date
   private _order: Order
 

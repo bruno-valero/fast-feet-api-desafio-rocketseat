@@ -1,5 +1,9 @@
 # FastFeet API - Desafio Rocketseat
 
+[![Typescript Badge](https://img.shields.io/badge/TypeScript-20232A?style=for-the-badge&logo=typescript&logoColor=007acd&link=https://gist.github.com/bruno-valero/302a8b36f8fb5749bd15866b523b315e)](https://gist.github.com/bruno-valero/302a8b36f8fb5749bd15866b523b315e)
+[![NodeJS Badge](https://img.shields.io/badge/Node.js-20232A?style=for-the-badge&logo=node.js&logoColor=68a063&link=https://gist.github.com/bruno-valero/9c4167a53b05049712ee0333c5664904)](https://gist.github.com/bruno-valero/9c4167a53b05049712ee0333c5664904)
+[![NestJS Badge](https://img.shields.io/badge/Nest.js-20232A?style=for-the-badge&logo=nestjs&logoColor=f00057&link=https://gist.github.com/bruno-valero/9c790eee84ac5cecbf41962c79098f9d)](https://gist.github.com/bruno-valero/9c790eee84ac5cecbf41962c79098f9d)
+
 Nesse desafio desenvolveremos uma API para controle de encomendas de uma transportadora fictícia, a FastFeet.
 
 Confira o enunciado do desafio no [Notion](https://efficient-sloth-d85.notion.site/Desafio-04-a3a2ef9297ad47b1a94f89b197274ffd)

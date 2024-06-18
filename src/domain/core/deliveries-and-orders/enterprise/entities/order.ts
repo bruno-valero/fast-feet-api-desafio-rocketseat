@@ -17,6 +17,7 @@ import { OrderAttachment } from './order-attachment'
 import { OrderAlreadyReturnedError } from '@/core/errors/errors/order-errors/order-already-returned-error copy'
 import { OrderNotAwaitingPickupError } from '@/core/errors/errors/order-errors/order-not-awaiting-for-pickup-error'
 import { OrderWasNotCollectedError } from '@/core/errors/errors/order-errors/order-was-not-collected-error'
+import { OrderCourierCollectedEvent } from '../events/order-courier-collected-event'
 
 export interface OrderProps {
   recipientId: UniqueEntityId
@@ -174,7 +175,7 @@ export class Order extends AggregateRoot<OrderProps> {
 
     const updateOrder = this.update(() => {
       this.props.collected = new Date()
-      this.addDomainEvent(new OrderCourierAcceptedEvent(this))
+      this.addDomainEvent(new OrderCourierCollectedEvent(this))
     }, updatedBy)
 
     return { data: updateOrder }
@@ -253,14 +254,22 @@ export class Order extends AggregateRoot<OrderProps> {
 
   get actions() {
     // adm
-    const admSetAwaitingPickup = this.admSetAwaitingPickup.bind(this)
-    const admCollected = this.admCollected.bind(this)
-    const admReturned = this.admReturned.bind(this)
+    const admSetAwaitingPickup = this.admSetAwaitingPickup.bind(
+      this,
+    ) as Order['admSetAwaitingPickup']
+    const admCollected = this.admCollected.bind(this) as Order['admCollected']
+    const admReturned = this.admReturned.bind(this) as Order['admReturned']
 
     // courier
-    const courierAccept = this.courierAccept.bind(this)
-    const courierReject = this.courierReject.bind(this)
-    const courierDeliver = this.courierDeliver.bind(this)
+    const courierAccept = this.courierAccept.bind(
+      this,
+    ) as Order['courierAccept']
+    const courierReject = this.courierReject.bind(
+      this,
+    ) as Order['courierReject']
+    const courierDeliver = this.courierDeliver.bind(
+      this,
+    ) as Order['courierDeliver']
 
     return {
       courier: {
