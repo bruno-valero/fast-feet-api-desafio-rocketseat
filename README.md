@@ -10,48 +10,70 @@ Confira o enunciado do desafio no [Notion](https://efficient-sloth-d85.notion.si
 
 ## Etapa Atual
 
-- As entidades de domínio foram criadas
+- Entities
 
-  - [x] administrator (adm)
-  - [x] attachment (para enviar o foto ao entregar a encomenda)
-  - [x] courier (entregador)
-  - [x] order attachment (ligação entre os attachments e uma order)
-  - [x] order (encomenda)
-  - [x] recipient (destinatário)
-  - [x] update adm (registros do update de um adm)
-  - [x] update courier (registros do update de um entregador)
-  - [x] update order (registros do update de uma encomenda)
-  - [x] update recipient (registros do update de um destinatário)
+  - deliver domain entities
+    - [x] administrator (adm)
+    - [x] attachment (para enviar o foto ao entregar a encomenda)
+    - [x] courier (entregador)
+    - [x] order attachment (ligação entre os attachments e uma order)
+    - [x] order (encomenda)
+    - [x] recipient (destinatário)
+    - [x] update adm (registros do update de um adm)
+    - [x] update courier (registros do update de um entregador)
+    - [x] update order (registros do update de uma encomenda)
+    - [x] update recipient (registros do update de um destinatário)
+  - notification domain entities
+    - [x] notification
 
-- Os use cases que foram criados
-  - [x] authentication and users register
-    - [x] adm
-      - [x] authenticate adm
-    - [x] courier
-      - [x] register courier
-      - [x] authenticate courier
-    - [x] recipient
-      - [x] register recipient
-      - [x] authenticate recipient
-  - [x] other actions
-    - [x] courier
-      - [x] delete courier
-      - [x] fech couriers
-      - [x] find courier
-      - [x] update courier password
-      - [x] delete courier
-    - [x] recipient
-      - [x] delete recipient
-      - [x] fech recipients
-      - [x] find recipient
-      - [x] update recipient password
-      - [x] delete recipient
-    - [ ] order
-      - processo inicializado (em andamento)
+- Use Cases
 
-## O que fazer a seguir?
+  - deliver domain use cases
+    - [x] authentication and users register
+      - [x] adm
+        - [x] authenticate adm
+      - [x] courier
+        - [x] register courier
+        - [x] authenticate courier
+      - [x] recipient
+        - [x] register recipient
+        - [x] authenticate recipient
+    - [x] other actions
+      - [x] courier
+        - [x] delete courier
+        - [x] fech couriers
+        - [x] find courier
+        - [x] update courier password
+        - [x] delete courier
+      - [x] recipient
+        - [x] delete recipient
+        - [x] fech recipients
+        - [x] find recipient
+        - [x] update recipient password
+        - [x] delete recipient
+      - [x] order
+        - [x] collect order
+        - [x] create order
+        - [x] delete order
+        - [x] deliver order
+        - [x] fetch orders
+        - [x] fetch recipient orders
+        - [x] fetch courier orders
+        - [x] fetch nearby orders
+        - [x] find order
+        - [x] mark order as awaiting for pickup
+        - [x] return order
+  - notification domain use cases
+    - [x] read notification
+    - [x] send notification
 
-Terminar o os use cases relacionados às orders (encomendas) e realizar os testes para validar o funcionamento
+- Events
+  - [x] on order awaiting for pickup (when an order is ready and awaiting for a courier to pick it up)
+  - [x] on order courier accept (when a courier accepts deliver an order)
+  - [x] on order courier cancelled (when a courier cancels de delivery of an order)
+  - [x] on order courier collected (when a courier collects an order that is awaiting to be picked up)
+  - [x] on order courier deliver (when a courier delivers an order to it's recipient)
+  - [x] on order returned (when a recipient returns an order after receiving it)
 
 ### Requisitos Funcionais
 
