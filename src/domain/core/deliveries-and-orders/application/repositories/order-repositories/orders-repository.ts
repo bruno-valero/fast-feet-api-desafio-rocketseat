@@ -1,8 +1,6 @@
-import { Injectable } from '@nestjs/common'
 import { Order } from '../../../enterprise/entities/order'
 import { Coordinates } from '../../../enterprise/entities/value-objects/coordinates'
 
-@Injectable()
 export abstract class OrdersRepository {
   abstract create(order: Order): Promise<void>
   abstract update(order: Order): Promise<void>

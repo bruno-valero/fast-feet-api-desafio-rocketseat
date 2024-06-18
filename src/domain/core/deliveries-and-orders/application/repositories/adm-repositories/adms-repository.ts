@@ -1,7 +1,5 @@
-import { Injectable } from '@nestjs/common'
 import { Adm } from '../../../enterprise/entities/adm'
 
-@Injectable()
 export abstract class AdmsRepository {
   abstract create(adm: Adm): Promise<void>
   abstract update(adm: Adm): Promise<void>

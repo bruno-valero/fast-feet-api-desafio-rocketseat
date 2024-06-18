@@ -1,7 +1,5 @@
-import { Injectable } from '@nestjs/common'
 import { Courier } from '../../../enterprise/entities/courier'
 
-@Injectable()
 export abstract class CouriersRepository {
   abstract create(courier: Courier): Promise<void>
   abstract update(courier: Courier): Promise<void>

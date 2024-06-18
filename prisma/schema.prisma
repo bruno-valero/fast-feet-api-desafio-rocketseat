@@ -1,0 +1,87 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model PrismaOrder {
+  id             String    @id @default(uuid())
+  recipientId    String    @map("recipient_d")
+  courierId      String?   @map("courier_id")
+  address        String
+  delivered      DateTime?
+  deliveredPhoto String?   @map("delivered_photo")
+  awaitingPickup DateTime? @map("awaiting_pickup")
+  collected      DateTime?
+  returned       DateTime?
+  returnCause    String?   @map("return_cause")
+  createdAt      DateTime  @map("created_at")
+  updatedAt      DateTime? @map("updated_at")
+
+  recipient   PrismaUser          @relation("recipient", fields: [recipientId], references: [id])
+  courier     PrismaUser?         @relation("courier", fields: [courierId], references: [id])
+  attachments PrismaAttachments[]
+
+  @@map("orders")
+}
+
+enum UserRoles {
+  recipient
+  adm
+  courier
+}
+
+model PrismaUser {
+  id          String    @id @default(uuid())
+  name        String
+  cpf         String    @unique
+  password    String
+  role        UserRoles
+  coordinates String?
+  createdAt   DateTime  @map("created_at")
+  updatedAt   DateTime? @map("updated_at")
+
+  recipient PrismaOrder[]   @relation("recipient")
+  courier   PrismaOrder[]   @relation("courier")
+  updates   PrismaUpdates[]
+
+  @@map("users")
+}
+
+enum UpdateObjectTypes {
+  recipient
+  adm
+  courier
+  order
+}
+
+model PrismaUpdates {
+  id         String            @id @default(uuid())
+  objectId   String            @map("object_id")
+  updatedBy  String            @map("updated_by")
+  date       DateTime
+  changes    String
+  objectType UpdateObjectTypes @map("object_type")
+
+  user PrismaUser @relation(fields: [updatedBy], references: [id])
+
+  @@map("updates")
+}
+
+model PrismaAttachments {
+  id      String  @id @default(uuid())
+  title   String
+  url     String
+  orderId String?
+
+  order PrismaOrder? @relation(fields: [orderId], references: [id])
+}
