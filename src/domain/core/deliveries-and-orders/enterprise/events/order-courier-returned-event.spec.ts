@@ -1,5 +1,5 @@
 import UniqueEntityId from '@/core/entities/unique-entity-id'
-import { OnOrderCourierAccepted } from '@/domain/generic/notification/application/subscribers/on-order-courier-accepted'
+import { OnOrderCourierReturned } from '@/domain/generic/notification/application/subscribers/on-order-courier-returned'
 import {
   SendNotificationUseCaseRequest,
   SendNotificationUseCaseResponse,
@@ -18,14 +18,14 @@ let awaitingPickup = makeMarkOrderAsAwaitingForPickupUseCase({
   ordersRepositoryAlt: createOrder.dependencies.ordersRepository,
 })
 let createNotification = makeSendNotificationUseCase()
-let sut: OnOrderCourierAccepted // eslint-disable-line
+let sut: OnOrderCourierReturned // eslint-disable-line
 
 let sendNotificationSpy: MockInstance<
   [SendNotificationUseCaseRequest],
   Promise<SendNotificationUseCaseResponse>
 >
 
-describe('on courier accept order', () => {
+describe('on courier collect order', () => {
   beforeEach(() => {
     createOrder = makeCreateOrderUseCase()
     awaitingPickup = makeMarkOrderAsAwaitingForPickupUseCase({
@@ -34,7 +34,7 @@ describe('on courier accept order', () => {
     })
     createNotification = makeSendNotificationUseCase()
 
-    sut = new OnOrderCourierAccepted(
+    sut = new OnOrderCourierReturned(
       createOrder.dependencies.ordersRepository,
       createNotification.useCase,
     )
@@ -43,7 +43,7 @@ describe('on courier accept order', () => {
 
   afterAll(() => {})
 
-  it('shoud be able to send a notification on courier accept order', async () => {
+  it('shoud be able to send a notification on courier collect order', async () => {
     await createOrder.dependencies.admsRepository.create(makeAdm())
 
     const adm = (await createOrder.dependencies.admsRepository.findMany())[0]
@@ -52,7 +52,7 @@ describe('on courier accept order', () => {
       requestResponsibleId: adm.id.value,
       creationProps: {
         address: makeAddress(),
-        courierId: null,
+        courierId: new UniqueEntityId('123'),
         recipientId: new UniqueEntityId('1188'),
       },
     })
@@ -61,7 +61,10 @@ describe('on courier accept order', () => {
       await createOrder.dependencies.ordersRepository.findMany()
     )[0]
 
-    order.actions.courier.courierAccept(new UniqueEntityId('123'), adm.id)
+    order.actions.adm.admSetAwaitingPickup(adm.id)
+    order.actions.adm.admCollected(adm.id)
+    order.actions.courier.courierDeliver(new UniqueEntityId('123'))
+    order.actions.adm.admReturned('nao sei', adm.id)
 
     await createOrder.dependencies.ordersRepository.update(order)
 

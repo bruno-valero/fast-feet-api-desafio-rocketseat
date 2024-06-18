@@ -4,11 +4,11 @@ import SendNotificationUseCase from '../use-cases/send-notification'
 import { left } from '@/core/either'
 import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-error'
 import { Injectable } from '@nestjs/common'
+import { OrderCourierCollectedEvent } from '@/domain/core/deliveries-and-orders/enterprise/events/order-courier-collected-event'
 import { OrdersRepository } from '@/domain/core/deliveries-and-orders/application/repositories/order-repositories/orders-repository'
-import { OrderCourierDeliverEvent } from '@/domain/core/deliveries-and-orders/enterprise/events/order-courier-deliver-event'
 
 @Injectable()
-export class OnOrderCourierDeliver implements EventHandler {
+export class OnOrderCourierCollected implements EventHandler {
   constructor(
     private ordersRepository: OrdersRepository,
     private sendNotificationUseCase: SendNotificationUseCase,
@@ -19,13 +19,15 @@ export class OnOrderCourierDeliver implements EventHandler {
   setupSubscriptions(): void {
     DomainEvents.register(
       this.sendNewAnswerNotification.bind(this),
-      OrderCourierDeliverEvent.name,
+      OrderCourierCollectedEvent.name,
     )
   }
 
-  private async sendNewAnswerNotification({ order }: OrderCourierDeliverEvent) {
-    console.log('sendNewAnswerNotification - OrderCourierDeliverEvent')
+  private async sendNewAnswerNotification({
+    order,
+  }: OrderCourierCollectedEvent) {
     const currentOrder = await this.ordersRepository.findById(order.id.value)
+
     if (!currentOrder) return left(new ResourceNotFoundError())
 
     await this.sendNotificationUseCase.execute({
