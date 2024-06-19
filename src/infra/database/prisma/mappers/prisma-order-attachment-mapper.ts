@@ -1,10 +1,10 @@
 import UniqueEntityId from '@/core/entities/unique-entity-id'
 import { EntityTypeError } from '@/core/errors/errors/entity-type-error'
 import { OrderAttachment } from '@/domain/core/deliveries-and-orders/enterprise/entities/order-attachment'
-import { PrismaAttachments } from '@prisma/client'
+import { PrismaAttachment } from '@prisma/client'
 
 export class PrismaOrderAttachmentMapper {
-  static toDomain(prismaOrderAttachment: PrismaAttachments): OrderAttachment {
+  static toDomain(prismaOrderAttachment: PrismaAttachment): OrderAttachment {
     if (!prismaOrderAttachment.orderId)
       throw new EntityTypeError(
         `OrderAttachment.orderId must be a string, but a nullish value was passed`,
@@ -21,8 +21,8 @@ export class PrismaOrderAttachmentMapper {
     return update
   }
 
-  // static domainToPrisma(OrderAttachment: OrderAttachment): PrismaAttachments {
-  //   const prismaOrderAttachment: PrismaAttachments = {
+  // static domainToPrisma(OrderAttachment: OrderAttachment): PrismaAttachment {
+  //   const prismaOrderAttachment: PrismaAttachment = {
   //     id: OrderAttachment.attachmentId.value,
   //     orderId: OrderAttachment.orderId.value,
 

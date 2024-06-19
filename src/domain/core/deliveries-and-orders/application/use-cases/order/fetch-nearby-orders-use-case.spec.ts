@@ -61,6 +61,7 @@ describe('fetch nearby orders use case', () => {
 
     const sutResp = await sut.useCase.execute({
       requestResponsibleId: courier.id.value,
+      courierId: courier.id.value,
       requestResponsibleRole: 'courier',
       coordinates: {
         latitude: -23.3963853,
@@ -119,6 +120,7 @@ describe('fetch nearby orders use case', () => {
 
     const sutResp = await sut.useCase.execute({
       requestResponsibleId: courier.id.value,
+      courierId: courier.id.value,
       requestResponsibleRole: 'courier',
       coordinates: {
         latitude: -23.3963853,
@@ -149,6 +151,7 @@ describe('fetch nearby orders use case', () => {
 
     const sutResp = await sut.useCase.execute({
       requestResponsibleId: 'any id',
+      courierId: '123',
       requestResponsibleRole: 'recipient',
       coordinates: {
         latitude: -23.3963853,

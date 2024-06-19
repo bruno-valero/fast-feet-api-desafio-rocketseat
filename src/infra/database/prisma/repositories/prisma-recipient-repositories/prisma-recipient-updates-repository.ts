@@ -2,9 +2,12 @@ import { UpdateRecipient } from '@/domain/core/deliveries-and-orders/enterprise/
 import { PrismaService } from '../../prisma.service'
 import { Injectable } from '@nestjs/common'
 import { PrismaUpdateRecipientMapper } from '../../mappers/prisma-update-recipient-mapper'
+import { RecipientUpdatesRepository } from '@/domain/core/deliveries-and-orders/application/repositories/recipient-repositories/recipient-updates-repository'
 
 @Injectable()
-export class PrismaRecipientUpdatesRepository {
+export class PrismaRecipientUpdatesRepository
+  implements RecipientUpdatesRepository
+{
   constructor(private prisma: PrismaService) {}
 
   async create(update: UpdateRecipient): Promise<void> {

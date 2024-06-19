@@ -18,8 +18,10 @@ model PrismaOrder {
   recipientId    String    @map("recipient_d")
   courierId      String?   @map("courier_id")
   address        String
+  latitude       Decimal
+  longitude      Decimal
   delivered      DateTime?
-  deliveredPhoto String?   @map("delivered_photo")
+  deliveredPhoto String?   @unique @map("delivered_photo")
   awaitingPickup DateTime? @map("awaiting_pickup")
   collected      DateTime?
   returned       DateTime?
@@ -27,9 +29,9 @@ model PrismaOrder {
   createdAt      DateTime  @map("created_at")
   updatedAt      DateTime? @map("updated_at")
 
-  recipient   PrismaUser          @relation("recipient", fields: [recipientId], references: [id])
-  courier     PrismaUser?         @relation("courier", fields: [courierId], references: [id])
-  attachments PrismaAttachments[]
+  recipient  PrismaUser        @relation("recipient", fields: [recipientId], references: [id])
+  courier    PrismaUser?       @relation("courier", fields: [courierId], references: [id])
+  attachment PrismaAttachment? @relation(fields: [deliveredPhoto], references: [orderId])
 
   @@map("orders")
 }
@@ -77,11 +79,11 @@ model PrismaUpdates {
   @@map("updates")
 }
 
-model PrismaAttachments {
+model PrismaAttachment {
   id      String  @id @default(uuid())
   title   String
   url     String
-  orderId String?
+  orderId String? @unique
 
-  order PrismaOrder? @relation(fields: [orderId], references: [id])
+  order PrismaOrder?
 }

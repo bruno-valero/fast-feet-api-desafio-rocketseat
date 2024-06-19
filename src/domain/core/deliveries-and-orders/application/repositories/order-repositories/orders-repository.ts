@@ -7,7 +7,11 @@ export abstract class OrdersRepository {
   abstract delete(id: string): Promise<void>
   abstract findById(id: string): Promise<Order | null>
   abstract findMany(): Promise<Order[]>
-  abstract findManyNearBy(coordinates: Coordinates): Promise<Order[]>
+  abstract findManyNearBy(
+    coordinates: Coordinates,
+    courierId: string,
+  ): Promise<Order[]>
+
   abstract findManyByCourierId(courierId: string): Promise<Order[]>
   abstract findManyByRecipientId(recipientId: string): Promise<Order[]>
 }

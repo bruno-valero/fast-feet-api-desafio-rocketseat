@@ -2,9 +2,10 @@ import { Adm } from '@/domain/core/deliveries-and-orders/enterprise/entities/adm
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../../prisma.service'
 import { PrismaAdmMapper } from '../../mappers/prisma-adm-mapper'
+import { AdmsRepository } from '@/domain/core/deliveries-and-orders/application/repositories/adm-repositories/adms-repository'
 
 @Injectable()
-export class PrismaAdmsRepository {
+export class PrismaAdmsRepository implements AdmsRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(adm: Adm): Promise<void> {
