@@ -15,6 +15,7 @@ import { Injectable } from '@nestjs/common'
 export interface FetchNearbyOrdersUseCaseRequest {
   coordinates: Coordinates['raw']
   requestResponsibleId: string
+  courierId: string
   requestResponsibleRole: UserRoles
 }
 
@@ -33,6 +34,7 @@ export class FetchNearbyOrdersUseCase {
 
   async execute({
     requestResponsibleId,
+    courierId,
     coordinates,
     requestResponsibleRole,
   }: FetchNearbyOrdersUseCaseRequest): Promise<FetchNearbyOrdersUseCaseResponse> {
@@ -54,6 +56,7 @@ export class FetchNearbyOrdersUseCase {
 
     const orders = await this.ordersRepository.findManyNearBy(
       new Coordinates(coordinates),
+      courierId,
     )
 
     return right({ orders })

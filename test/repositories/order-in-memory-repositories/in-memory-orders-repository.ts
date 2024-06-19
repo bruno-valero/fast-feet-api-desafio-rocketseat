@@ -39,9 +39,14 @@ export class InMemoryOrdersRepository extends OrdersRepository {
     return orders
   }
 
-  async findManyNearBy(coordinates: Coordinates): Promise<Order[]> {
+  async findManyNearBy(
+    coordinates: Coordinates,
+    courierId: string,
+  ): Promise<Order[]> {
     const orders = this.items.filter(
-      (item) => item.address.coordinates.getDistance(coordinates) <= 10,
+      (item) =>
+        item.address.coordinates.getDistance(coordinates) <= 10 &&
+        item.courierId?.value === courierId,
     )
 
     return orders

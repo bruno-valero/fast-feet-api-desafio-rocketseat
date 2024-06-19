@@ -1,9 +1,9 @@
 import UniqueEntityId from '@/core/entities/unique-entity-id'
 import { Attachment } from '@/domain/core/deliveries-and-orders/enterprise/entities/attachment'
-import { PrismaAttachments } from '@prisma/client'
+import { PrismaAttachment } from '@prisma/client'
 
 export class PrismaAttachmentMapper {
-  static toDomain(prismaAttachment: PrismaAttachments): Attachment {
+  static toDomain(prismaAttachment: PrismaAttachment): Attachment {
     const orderId = prismaAttachment.orderId
       ? new UniqueEntityId(prismaAttachment.orderId)
       : null
@@ -20,8 +20,8 @@ export class PrismaAttachmentMapper {
     return update
   }
 
-  static domainToPrisma(attachment: Attachment): PrismaAttachments {
-    const prismaAttachment: PrismaAttachments = {
+  static domainToPrisma(attachment: Attachment): PrismaAttachment {
+    const prismaAttachment: PrismaAttachment = {
       id: attachment.id.value,
       orderId: attachment.id.value,
       title: attachment.title,

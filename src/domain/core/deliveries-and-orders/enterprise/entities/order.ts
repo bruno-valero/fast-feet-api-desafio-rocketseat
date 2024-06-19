@@ -33,17 +33,19 @@ export interface OrderProps {
   updatedAt: Date | null
 }
 
-export type OrderCreateProps = Optional<
-  OrderProps,
-  | 'awaitingPickup'
-  | 'collected'
-  | 'returned'
-  | 'returnCause'
-  | 'delivered'
-  | 'deliveredPhoto'
-  | 'createdAt'
-  | 'updatedAt'
->
+export type OrderCreateProps = Omit<
+  Optional<
+    OrderProps,
+    | 'awaitingPickup'
+    | 'collected'
+    | 'returned'
+    | 'returnCause'
+    | 'delivered'
+    | 'createdAt'
+    | 'updatedAt'
+  >,
+  'deliveredPhoto'
+> & { deliveredPhoto?: string | null }
 
 export type UpdateOrderReturn<errors> = { data?: UpdateOrder; error?: errors }
 
@@ -64,11 +66,17 @@ export type OrderToJsonData = {
 
 export class Order extends AggregateRoot<OrderProps> {
   static create(props: OrderCreateProps, id?: UniqueEntityId) {
+    const orderId = id ?? new UniqueEntityId()
     return new Order(
       {
         ...props,
         delivered: props.delivered ?? null,
-        deliveredPhoto: props.deliveredPhoto ?? null,
+        deliveredPhoto: props.deliveredPhoto
+          ? new OrderAttachment({
+              attachmentId: new UniqueEntityId(props.deliveredPhoto),
+              orderId,
+            })
+          : null,
         awaitingPickup: props.awaitingPickup ?? null,
         collected: props.collected ?? null,
         returned: props.returned ?? null,
@@ -76,7 +84,7 @@ export class Order extends AggregateRoot<OrderProps> {
         createdAt: props.createdAt ?? new Date(),
         updatedAt: props.updatedAt ?? null,
       },
-      id,
+      orderId,
     )
   }
 
@@ -113,10 +121,7 @@ export class Order extends AggregateRoot<OrderProps> {
         collected: dateFrom(data.collected),
         createdAt: dateFrom(data.createdAt),
         delivered: dateFrom(data.delivered),
-        deliveredPhoto: OrderAttachment.create({
-          attachmentId: new UniqueEntityId(data.deliveredPhoto?.attachmentId),
-          orderId: new UniqueEntityId(data.deliveredPhoto?.orderId),
-        }),
+        deliveredPhoto: data.deliveredPhoto?.attachmentId ?? null,
         returnCause: data.returnCause,
         returned: dateFrom(data.returned),
         updatedAt: dateFrom(data.updatedAt),

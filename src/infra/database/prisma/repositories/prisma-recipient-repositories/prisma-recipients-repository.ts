@@ -2,9 +2,10 @@ import { Recipient } from '@/domain/core/deliveries-and-orders/enterprise/entiti
 import { Injectable } from '@nestjs/common'
 import { PrismaService } from '../../prisma.service'
 import { PrismaRecipientMapper } from '../../mappers/prisma-recipient-mapper'
+import { RecipientsRepository } from '@/domain/core/deliveries-and-orders/application/repositories/recipient-repositories/recipients-repository'
 
 @Injectable()
-export class PrismaRecipientsRepository {
+export class PrismaRecipientsRepository implements RecipientsRepository {
   constructor(private prisma: PrismaService) {}
 
   async create(recipient: Recipient): Promise<void> {
