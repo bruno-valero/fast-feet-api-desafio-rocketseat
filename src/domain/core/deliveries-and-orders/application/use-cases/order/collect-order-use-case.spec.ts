@@ -4,8 +4,8 @@ import { makeCreateOrderUseCase } from 'test/factories/use-cases/order/make-crea
 import { makeAddress } from 'test/factories/entities/value-objects/makeAddress'
 import UniqueEntityId from '@/core/entities/unique-entity-id'
 import { makeCollectOrderUseCase } from 'test/factories/use-cases/order/make-collect-order-use-case'
-import { OrderIsClosedError } from '@/core/errors/errors/order-errors/order-is-closed-error'
 import { OrderNotAwaitingPickupError } from '@/core/errors/errors/order-errors/order-not-awaiting-for-pickup-error'
+import { OrderAlreadyCollectedError } from '@/core/errors/errors/order-errors/order-already-collected-error'
 
 describe('collect order use case', () => {
   let createOrder = makeCreateOrderUseCase()
@@ -129,7 +129,7 @@ describe('collect order use case', () => {
     const orders = await sut.dependencies.ordersRepository.findMany()
 
     expect(sutResp.isLeft()).toBeTruthy()
-    expect(sutResp.value).toBeInstanceOf(OrderIsClosedError)
+    expect(sutResp.value).toBeInstanceOf(OrderAlreadyCollectedError)
     expect(orders).toHaveLength(1)
     expect(orders[0]).toEqual(
       expect.objectContaining({
@@ -176,7 +176,7 @@ describe('collect order use case', () => {
     const orders = await sut.dependencies.ordersRepository.findMany()
 
     expect(sutResp.isLeft()).toBeTruthy()
-    expect(sutResp.value).toBeInstanceOf(OrderIsClosedError)
+    expect(sutResp.value).toBeInstanceOf(OrderAlreadyCollectedError)
     expect(orders).toHaveLength(1)
     expect(orders[0]).toEqual(
       expect.objectContaining({
