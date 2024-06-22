@@ -21,6 +21,7 @@ import { OrderIsClosedError } from '@/core/errors/errors/order-errors/order-is-c
 import { InternalServerError } from '@/core/errors/errors/internal-server-error'
 import { OrderAlreadyCollectedError } from '@/core/errors/errors/order-errors/order-already-collected-error'
 
+
 const paramsSchema = z.object({
   id: z.string().uuid(),
 })
@@ -62,6 +63,7 @@ export class CollectOrderController {
       if (value instanceof UnauthorizedError) {
         throw new UnauthorizedException({ message: value.message })
       }
+
       if (value instanceof OrderAlreadyCollectedError) {
         throw new BadRequestException({ message: value.message })
       }

@@ -217,6 +217,7 @@ Authorization: Bearer {{authToken}}
 ###
 
 # @name fetchNearbyOrders
+
 GET {{baseUrl}}/orders/{{firstCourierId}}/nearby?latitude={{currentLatitude}}&longitude={{currentLongitude}}
 Content-Type: application/json
 Authorization: Bearer {{authToken}}

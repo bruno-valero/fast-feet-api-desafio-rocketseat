@@ -25,6 +25,7 @@ import { OrderCourierCollectedEvent } from '../events/order-courier-collected-ev
 import z from 'zod'
 import { OrderAlreadyCollectedError } from '@/core/errors/errors/order-errors/order-already-collected-error'
 
+
 export const orderPropsSchema = z.object({
   recipientId: uniqueEntityIdInstanceSchema,
   courierId: uniqueEntityIdInstanceSchema.nullable(),
