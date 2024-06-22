@@ -12,7 +12,7 @@ export interface UpdateRecipientUseCaseRequest {
   recipientId: string
   name: string
   cpf: string
-  admId: string
+  requestResponsibleId: string
 }
 
 export type UpdateRecipientUseCaseResponse = Either<
@@ -32,9 +32,9 @@ export class UpdateRecipientUseCase {
     recipientId,
     cpf,
     name,
-    admId,
+    requestResponsibleId,
   }: UpdateRecipientUseCaseRequest): Promise<UpdateRecipientUseCaseResponse> {
-    const adm = await this.admsRepository.findById(admId)
+    const adm = await this.admsRepository.findById(requestResponsibleId)
     if (!adm) return left(new ResourceNotFoundError())
 
     const hasPermission = Permissions.hasPermission(
@@ -48,7 +48,7 @@ export class UpdateRecipientUseCase {
 
     const { data: update } = recipient.changeData(
       { cpf, name },
-      new UniqueEntityId(admId),
+      new UniqueEntityId(requestResponsibleId),
     )
     await this.recipientsRepository.update(recipient)
     await this.recipientUpdatesRepository.create(update)

@@ -1,0 +1,272 @@
+@baseUrl = http://localhost:3000
+@authToken = {{authenticate.response.body.token}}
+
+
+@firstCourierId = {{fetchCourier.response.body.couriers[0]._id._value}}
+@firstRecipientId = {{fetchRecipient.response.body.recipients[0]._id._value}}
+
+@firstOrderId = {{fetchAllOrders.response.body.orders[0]._id._value}}
+
+@currentLatitude = -23.3963853
+@currentLongitude = -46.3086881
+
+@nearbyLatitude = -23.3798813
+@nearbyLongitude = -46.2576877
+
+@farAwayLatitude = -23.3571925
+@farAwayLongitude = -46.2076257
+
+
+###
+
+
+# @name authenticate
+POST {{baseUrl}}/sessions
+Content-Type: application/json
+
+{
+    "cpf": "45618677830",
+    "password": "123",
+    "role": "adm"
+}
+
+
+###
+
+# @name registerCourier
+POST {{baseUrl}}/register
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "cpf": "24247258028",
+    "name": "courier teste",
+    "password": "123",
+    "requestResponsibleId": "02e3db39-2855-4d57-86bf-8a10364d9804",
+    "role": "courier"
+}
+
+###
+
+# @name registerRecipient
+POST {{baseUrl}}/register
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "cpf": "67131743020",
+    "name": "courier teste",
+    "password": "123",
+    "requestResponsibleId": "02e3db39-2855-4d57-86bf-8a10364d9804",
+    "role": "recipient"
+}
+
+
+###
+
+# @name deleteUser
+DELETE  {{baseUrl}}/users/courier/a95c748a-dbbb-456f-9d6c-a91a584d2ca9
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name fetchCourier
+GET {{baseUrl}}/users/courier
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name fetchRecipient
+GET {{baseUrl}}/users/recipient
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name findCourier
+GET {{baseUrl}}/users/courier/{{firstCourierId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name findRecipient
+GET {{baseUrl}}/users/recipient/{{firstRecipientId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name updateCourierPassword
+PATCH  {{baseUrl}}/users/courier/{{firstCourierId}}/update-password
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "password": "Courier pass",
+}
+
+
+###
+
+# @name updateRecipientPassword
+PATCH  {{baseUrl}}/users/recipient/{{firstRecipientId}}/update-password
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "password": "Recipient pass",
+}
+
+
+
+###
+
+# @name updateUser
+PUT   {{baseUrl}}/users/courier/6726449a-790d-40e9-a5fe-6d725066c335
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "cpf": "48995844078",
+    "name": "otavio 2"
+}
+
+
+###
+
+# @name collectOrder
+PATCH  {{baseUrl}}/orders/{{firstOrderId}}/collect
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name createNearbyOrder
+POST  {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "courierId": "{{firstCourierId}}",
+    "recipientId": "{{firstRecipientId}}",
+    "address": {
+        "coordinates": {
+            "latitude": "{{nearbyLatitude}}",
+            "longitude": "{{nearbyLongitude}}"
+        },
+        "cep": "77777-888",
+        "number": "Rua dos bobos",
+        "street": "número zero",
+        "neighborhood": "Não tinha bairro",
+        "city": "Não tinha cidade",
+        "state": "SP"
+    }
+}
+
+
+###
+
+# @name createFarAwayOrder
+POST  {{baseUrl}}/orders
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+    "courierId": "{{firstCourierId}}",
+    "recipientId": "{{firstRecipientId}}",
+    "address": {
+        "coordinates": {
+            "latitude": "{{farAwayLatitude}}",
+            "longitude": "{{farAwayLongitude}}"
+        },
+        "cep": "77777-888",
+        "number": "Rua dos bobos",
+        "street": "número zero",
+        "neighborhood": "Não tinha bairro",
+        "city": "Não tinha cidade",
+        "state": "SP"
+    }
+}
+
+
+###
+
+# @name deleteOrder
+DELETE  {{baseUrl}}/orders/{{firstOrderId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name deliverOrder
+PATCH  {{baseUrl}}/orders/{{firstOrderId}}/deliver
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name fetchNearbyOrders
+GET {{baseUrl}}/orders/{{firstCourierId}}/nearby?latitude={{currentLatitude}}&longitude={{currentLongitude}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name fetchAllOrders
+GET {{baseUrl}}/orders/all
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name fetchCourierOrders
+GET {{baseUrl}}/orders/courier?userId={{firstCourierId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name fetchRecipientOrders
+GET {{baseUrl}}/orders/recipent?userId={{firstRecipientId}}
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name findOrder
+GET {{baseUrl}}/orders/{{firstOrderId}}/find
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name markOrderAsAwaitingForPickup
+PATCH  {{baseUrl}}/orders/{{firstOrderId}}/awaiting
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+
+###
+
+# @name returnOrder
+PATCH  {{baseUrl}}/orders/{{firstOrderId}}/return?returnCause=porque sim
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+

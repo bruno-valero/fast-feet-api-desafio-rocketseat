@@ -10,6 +10,7 @@ import { OrderAwaitingPickupError } from '@/core/errors/errors/order-errors/orde
 import { OrderIsClosedError } from '@/core/errors/errors/order-errors/order-is-closed-error'
 import { InternalServerError } from '@/core/errors/errors/internal-server-error'
 import { Injectable } from '@nestjs/common'
+import { OrderAlreadyCollectedError } from '@/core/errors/errors/order-errors/order-already-collected-error'
 
 export interface CollectOrderUseCaseRequest {
   orderId: string
@@ -21,6 +22,7 @@ export type CollectOrderUseCaseResponse = Either<
   | UnauthorizedError
   | OrderAwaitingPickupError
   | OrderIsClosedError
+  | OrderAlreadyCollectedError
   | InternalServerError,
   null
 >

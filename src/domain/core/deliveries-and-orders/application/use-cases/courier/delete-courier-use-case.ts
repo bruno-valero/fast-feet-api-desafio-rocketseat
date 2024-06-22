@@ -33,6 +33,9 @@ export class DeleteCourierUseCase {
     const hasPermission = Permissions.hasPermission('read_courier', adm.role)
     if (!hasPermission) return left(new UnauthorizedError())
 
+    const courier = await this.couriersRepository.findById(courierId)
+    if (!courier) return left(new ResourceNotFoundError())
+
     await this.couriersRepository.delete(courierId)
 
     return right(null)

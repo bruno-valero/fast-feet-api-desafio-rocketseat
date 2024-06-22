@@ -60,7 +60,7 @@ export class PrismaOrdersRepository implements OrdersRepository {
     courierId: string,
   ): Promise<Order[]> {
     const data = await this.prisma.$queryRaw<PrismaOrder[]>`
-    SELECT * IN orders
+    SELECT * from orders
     WHERE ( 6371 * acos( cos( radians(${latitude}) ) * cos( radians( latitude ) ) * cos( radians( longitude ) - radians(${longitude}) ) + sin( radians(${latitude}) ) * sin( radians( latitude ) ) ) ) <= 10
     AND courier_id = ${courierId}
     `

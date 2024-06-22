@@ -1,4 +1,11 @@
 import { randomUUID } from 'node:crypto'
+import z from 'zod'
+
+// eslint-disable-next-line
+export const uniqueEntityIdInstanceSchema = z.custom<UniqueEntityId>(
+  (data) => data instanceof UniqueEntityId,
+  'must be an UniqueEntityId',
+)
 
 export default class UniqueEntityId {
   private _value: string
