@@ -1,8 +1,14 @@
 import UniqueEntityId from '@/core/entities/unique-entity-id'
-import { Order } from '@/domain/core/deliveries-and-orders/enterprise/entities/order'
+import {
+  Order,
+  OrderCreateProps,
+} from '@/domain/core/deliveries-and-orders/enterprise/entities/order'
 import { makeAddress } from './value-objects/makeAddress'
 
-export function makeOrder(override?: Partial<Order>, id?: UniqueEntityId) {
+export function makeOrder(
+  override?: Partial<OrderCreateProps>,
+  id?: UniqueEntityId,
+) {
   const result = Order.create(
     {
       address: makeAddress(override?.address),

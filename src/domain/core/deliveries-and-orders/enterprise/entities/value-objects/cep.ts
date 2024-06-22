@@ -1,5 +1,12 @@
 import { DataValidationError } from '@/core/errors/errors/data-validation-error'
 import { mask } from 'remask'
+import z from 'zod'
+
+// eslint-disable-next-line
+export const cepInstanceSchema = z.custom<Cep>(
+  (data) => data instanceof Cep,
+  'must be a valide Cep',
+)
 
 export class Cep {
   private cep: string

@@ -127,7 +127,7 @@ describe('fetch nearby orders use case', () => {
         longitude: -46.3086881,
       },
     })
-    // courier ccordinates
+    // courier coordinates
     // -23.3963853,-46.3086881
 
     expect(sutResp.isRight()).toBeTruthy()

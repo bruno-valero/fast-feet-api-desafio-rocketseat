@@ -1,5 +1,12 @@
 import UniqueEntityId from '@/core/entities/unique-entity-id'
 import Entity from '@/core/entities/entity'
+import z from 'zod'
+
+// eslint-disable-next-line
+export const orderAttachmentInstanceSchema = z.custom<OrderAttachment>(
+  (data) => data instanceof OrderAttachment,
+  'must be a valide OrderAttachment',
+)
 
 export interface OrderAttachmentProps {
   orderId: UniqueEntityId

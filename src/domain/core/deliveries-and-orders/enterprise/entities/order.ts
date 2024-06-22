@@ -1,6 +1,7 @@
-import UniqueEntityId from '@/core/entities/unique-entity-id'
-import { Address } from './value-objects/address'
-import { Optional } from '@/core/types/optional'
+import UniqueEntityId, {
+  uniqueEntityIdInstanceSchema,
+} from '@/core/entities/unique-entity-id'
+import { Address, addressInstanceSchema } from './value-objects/address'
 import { AggregateRoot } from '@/core/entities/aggregate-root'
 import { OrderAlreadyAcceptedError } from '@/core/errors/errors/order-errors/order-already-accepted-error'
 import { OrderIsClosedError } from '@/core/errors/errors/order-errors/order-is-closed-error'
@@ -13,39 +14,75 @@ import { OrderAwaitingForPickupEvent } from '../events/order-awaiting-for-pickup
 import { OrderNotDeliveredError } from '@/core/errors/errors/order-errors/order-not-delivered-error'
 import { OrderCourierReturnedEvent } from '../events/order-courier-returned-event'
 import { UpdateOrder } from './update-order'
-import { OrderAttachment } from './order-attachment'
+import {
+  OrderAttachment,
+  orderAttachmentInstanceSchema,
+} from './order-attachment'
 import { OrderAlreadyReturnedError } from '@/core/errors/errors/order-errors/order-already-returned-error copy'
 import { OrderNotAwaitingPickupError } from '@/core/errors/errors/order-errors/order-not-awaiting-for-pickup-error'
 import { OrderWasNotCollectedError } from '@/core/errors/errors/order-errors/order-was-not-collected-error'
 import { OrderCourierCollectedEvent } from '../events/order-courier-collected-event'
+import z from 'zod'
 
-export interface OrderProps {
-  recipientId: UniqueEntityId
-  courierId: UniqueEntityId | null
-  address: Address
-  delivered: Date | null
-  deliveredPhoto: OrderAttachment | null
-  awaitingPickup: Date | null
-  collected: Date | null
-  returned: Date | null
-  returnCause: string | null
-  createdAt: Date
-  updatedAt: Date | null
-}
+export const orderPropsSchema = z.object({
+  recipientId: uniqueEntityIdInstanceSchema,
+  courierId: uniqueEntityIdInstanceSchema.nullable(),
+  address: addressInstanceSchema,
+  delivered: z.date().nullable(),
+  deliveredPhoto: orderAttachmentInstanceSchema.nullable(),
+  awaitingPickup: z.date().nullable(),
+  collected: z.date().nullable(),
+  returned: z.date().nullable(),
+  returnCause: z.string().nullable(),
+  createdAt: z.date(),
+  updatedAt: z.date().nullable(),
+})
 
-export type OrderCreateProps = Omit<
-  Optional<
-    OrderProps,
-    | 'awaitingPickup'
-    | 'collected'
-    | 'returned'
-    | 'returnCause'
-    | 'delivered'
-    | 'createdAt'
-    | 'updatedAt'
-  >,
-  'deliveredPhoto'
-> & { deliveredPhoto?: string | null }
+export type OrderProps = z.infer<typeof orderPropsSchema>
+
+// export interface OrderProps {
+//   recipientId: UniqueEntityId
+//   courierId: UniqueEntityId | null
+//   address: Address
+//   delivered: Date | null
+//   deliveredPhoto: OrderAttachment | null
+//   awaitingPickup: Date | null
+//   collected: Date | null
+//   returned: Date | null
+//   returnCause: string | null
+//   createdAt: Date
+//   updatedAt: Date | null
+// }
+
+export const orderCreatePropsSchema = z.object({
+  recipientId: uniqueEntityIdInstanceSchema,
+  courierId: uniqueEntityIdInstanceSchema.nullable(),
+  address: addressInstanceSchema,
+  delivered: z.date().nullable().optional(),
+  deliveredPhoto: z.string().nullable().optional(),
+  awaitingPickup: z.date().nullable().optional(),
+  collected: z.date().nullable().optional(),
+  returned: z.date().nullable().optional(),
+  returnCause: z.string().nullable().optional(),
+  createdAt: z.date().optional(),
+  updatedAt: z.date().nullable().optional(),
+})
+
+export type OrderCreateProps = z.infer<typeof orderCreatePropsSchema>
+
+// export type OrderCreateProps = Omit<
+//   Optional<
+//     OrderProps,
+//     | 'awaitingPickup'
+//     | 'collected'
+//     | 'returned'
+//     | 'returnCause'
+//     | 'delivered'
+//     | 'createdAt'
+//     | 'updatedAt'
+//   >,
+//   'deliveredPhoto'
+// > & { deliveredPhoto?: string | null }
 
 export type UpdateOrderReturn<errors> = { data?: UpdateOrder; error?: errors }
 

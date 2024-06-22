@@ -1,59 +1,73 @@
-export type StatesShort =
-  | 'AM'
-  | 'PA'
-  | 'RR'
-  | 'AP'
-  | 'AC'
-  | 'RO'
-  | 'TO'
-  | 'MA'
-  | 'PI'
-  | 'CE'
-  | 'RN'
-  | 'PB'
-  | 'PE'
-  | 'AL'
-  | 'SE'
-  | 'BA'
-  | 'MG'
-  | 'ES'
-  | 'RJ'
-  | 'SP'
-  | 'PR'
-  | 'SC'
-  | 'RS'
-  | 'MS'
-  | 'MT'
-  | 'GO'
-  | 'DF'
-type StatesVerbose =
-  | 'Amazonas'
-  | 'Pará'
-  | 'Roraima'
-  | 'Amapá'
-  | 'Acre'
-  | 'Rondônia'
-  | 'Tocantins'
-  | 'Maranhão'
-  | 'Piauí'
-  | 'Ceará'
-  | 'Rio Grande do Norte'
-  | 'Paraíba'
-  | 'Pernambuco'
-  | 'Alagoas'
-  | 'Sergipe'
-  | 'Bahia'
-  | 'Minas Gerais'
-  | 'Espírito Santo'
-  | 'Rio de Janeiro'
-  | 'São Paulo'
-  | 'Paraná'
-  | 'Santa Catarina'
-  | 'Rio Grande do Sul'
-  | 'Mato Grosso do Sul'
-  | 'Mato Grosso'
-  | 'Goiás'
-  | 'Distrito Federal'
+import z from 'zod'
+
+export const statesShortSchema = z.enum([
+  'AM',
+  'PA',
+  'RR',
+  'AP',
+  'AC',
+  'RO',
+  'TO',
+  'MA',
+  'PI',
+  'CE',
+  'RN',
+  'PB',
+  'PE',
+  'AL',
+  'SE',
+  'BA',
+  'MG',
+  'ES',
+  'RJ',
+  'SP',
+  'PR',
+  'SC',
+  'RS',
+  'MS',
+  'MT',
+  'GO',
+  'DF',
+])
+export type StatesShort = z.infer<typeof statesShortSchema>
+
+export const statesStatesVerboseSchema = z.enum([
+  'Amazonas',
+  'Pará',
+  'Roraima',
+  'Amapá',
+  'Acre',
+  'Rondônia',
+  'Tocantins',
+  'Maranhão',
+  'Piauí',
+  'Ceará',
+  'Rio Grande do Norte',
+  'Paraíba',
+  'Pernambuco',
+  'Alagoas',
+  'Sergipe',
+  'Bahia',
+  'Minas Gerais',
+  'Espírito Santo',
+  'Rio de Janeiro',
+  'São Paulo',
+  'Paraná',
+  'Santa Catarina',
+  'Rio Grande do Sul',
+  'Mato Grosso do Sul',
+  'Mato Grosso',
+  'Goiás',
+  'Distrito Federal',
+])
+
+type StatesVerbose = z.infer<typeof statesStatesVerboseSchema>
+
+// eslint-disable-next-line
+export const stateInstanceSchema = z.custom<State>(
+  (data) => data instanceof State,
+  'must be a valide State',
+)
 
 export class State {
   private state: StatesShort

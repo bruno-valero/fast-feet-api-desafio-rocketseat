@@ -1,21 +1,56 @@
 import { ValueObject } from '@/core/entities/value-objects'
 import { Cep } from './cep'
-import { Coordinates } from './coordinates'
-import { State, StatesShort } from './state'
+import {
+  Coordinates,
+  coordinatesInstanceSchema,
+  coordinatesSchema,
+} from './coordinates'
+import { State, StatesShort, statesShortSchema } from './state'
+import z from 'zod'
 
-export interface AddressProps {
-  coordinates: Coordinates
-  cep: string
-  number: string
-  street: string
-  neighborhood: string
-  city: string
-  state: StatesShort
-}
+// eslint-disable-next-line
+export const addressInstanceSchema = z.custom<Address>(
+  (data) => data instanceof Address,
+  'must be a valide Address',
+)
 
-export type AddressCreationProps = Omit<AddressProps, 'coordinates'> & {
-  coordinates: Coordinates['raw']
-}
+export const addressPropsSchema = z.object({
+  coordinates: coordinatesInstanceSchema,
+  cep: z.string(),
+  number: z.string(),
+  street: z.string(),
+  neighborhood: z.string(),
+  city: z.string(),
+  state: statesShortSchema,
+})
+
+export type AddressProps = z.infer<typeof addressPropsSchema>
+
+// export interface AddressProps {
+//   coordinates: Coordinates
+//   cep: string
+//   number: string
+//   street: string
+//   neighborhood: string
+//   city: string
+//   state: StatesShort
+// }
+
+export const addressCreationPropsSchema = z.object({
+  coordinates: coordinatesSchema,
+  cep: z.string(),
+  number: z.string(),
+  street: z.string(),
+  neighborhood: z.string(),
+  city: z.string(),
+  state: statesShortSchema,
+})
+
+export type AddressCreationProps = z.infer<typeof addressCreationPropsSchema>
+
+// export type AddressCreationProps = Omit<AddressProps, 'coordinates'> & {
+//   coordinates: Coordinates['raw']
+// }
 
 export type AddressRaw = {
   coordinates: Coordinates['raw']
