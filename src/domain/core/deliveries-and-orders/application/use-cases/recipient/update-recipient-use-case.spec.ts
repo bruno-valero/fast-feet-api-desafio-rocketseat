@@ -39,7 +39,7 @@ describe('update recipient use case', () => {
       recipientId: recipient.id.value,
       cpf: '44411132112',
       name: 'bruno-2',
-      admId: adm.id.value,
+      requestResponsibleId: adm.id.value,
     })
 
     const recipients = await sut.dependencies.recipientsRepository.findMany()
@@ -74,7 +74,7 @@ describe('update recipient use case', () => {
       recipientId: recipient.id.value,
       cpf: '44411132112',
       name: 'bruno-2',
-      admId: adm.id.value,
+      requestResponsibleId: adm.id.value,
     })
 
     const updates = await sut.dependencies.recipientUpdatesRepository.findMany()
@@ -104,7 +104,7 @@ describe('update recipient use case', () => {
       recipientId: recipient.id.value,
       cpf: '44411132112',
       name: 'bruno-2',
-      admId: 'any Id',
+      requestResponsibleId: 'any Id',
     })
 
     const recipients = await sut.dependencies.recipientsRepository.findMany()

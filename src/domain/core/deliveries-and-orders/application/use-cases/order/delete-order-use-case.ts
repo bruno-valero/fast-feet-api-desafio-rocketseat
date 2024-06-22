@@ -33,6 +33,9 @@ export class DeleteOrderUseCase {
     const hasPermission = Permissions.hasPermission('read_order', adm.role)
     if (!hasPermission) return left(new UnauthorizedError())
 
+    const order = await this.ordersRepository.findById(orderId)
+    if (!order) return left(new ResourceNotFoundError())
+
     await this.ordersRepository.delete(orderId)
 
     return right(null)

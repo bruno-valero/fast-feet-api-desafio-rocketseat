@@ -2,8 +2,10 @@ import Entity from '@/core/entities/entity'
 import { Cpf } from '../value-objects/cpf'
 import { Coordinates } from '../value-objects/coordinates'
 import UniqueEntityId from '@/core/entities/unique-entity-id'
+import z from 'zod'
 
-export type UserRoles = 'recipient' | 'adm' | 'courier'
+export const userRoleSchema = z.enum(['recipient', 'adm', 'courier'])
+export type UserRoles = z.infer<typeof userRoleSchema>
 
 export interface UserProps {
   name: string

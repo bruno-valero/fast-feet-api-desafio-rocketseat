@@ -105,7 +105,7 @@ describe('mark order as awaiting for pickup use case', () => {
     const order = (await sut.dependencies.ordersRepository.findMany())[0]
 
     // fake awaiting for pickup
-    order.actions.adm.admSetAwaitingPickup()
+    order.actions.adm.admSetAwaitingPickup(adm.id)
 
     // update changes
     createOrder.dependencies.ordersRepository.update(order)
@@ -145,13 +145,13 @@ describe('mark order as awaiting for pickup use case', () => {
     const order = (await sut.dependencies.ordersRepository.findMany())[0]
 
     // fake awaiting for pickup
-    order.actions.adm.admSetAwaitingPickup()
+    order.actions.adm.admSetAwaitingPickup(adm.id)
     // fake collected
-    order.actions.adm.admCollected()
+    order.actions.adm.admCollected(adm.id)
     // fake delivery
-    order.actions.courier.courierDeliver()
+    order.actions.courier.courierDeliver(order.courierId!)
     // fake return
-    order.actions.adm.admReturned()
+    order.actions.adm.admReturned('sei la', adm.id)
     // update changes
     createOrder.dependencies.ordersRepository.update(order)
 
@@ -190,11 +190,11 @@ describe('mark order as awaiting for pickup use case', () => {
     const order = (await sut.dependencies.ordersRepository.findMany())[0]
 
     // fake awaiting for pickup
-    order.actions.adm.admSetAwaitingPickup()
+    order.actions.adm.admSetAwaitingPickup(adm.id)
     // fake collected
-    order.actions.adm.admCollected()
+    order.actions.adm.admCollected(adm.id)
     // fake delivery
-    order.actions.courier.courierDeliver()
+    order.actions.courier.courierDeliver(order.courierId!)
 
     // update changes
     createOrder.dependencies.ordersRepository.update(order)

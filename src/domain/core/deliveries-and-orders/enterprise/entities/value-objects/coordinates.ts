@@ -1,19 +1,26 @@
 import { ValueObject } from '@/core/entities/value-objects'
 import z from 'zod'
 
+// eslint-disable-next-line
+export const coordinatesInstanceSchema = z.custom<Coordinates>(
+  (data) => data instanceof Coordinates,
+  'must be a valide Coordinates',
+)
+
+export const latitudeSchema = z.coerce
+  .number()
+  .refine((lat) => Math.abs(lat) <= 90, 'latitude must be between -90 and 90')
+
+export const longitudeSchema = z.coerce
+  .number()
+  .refine(
+    (lat) => Math.abs(lat) <= 180,
+    'longitude must be between -180 and 180',
+  )
+
 export const coordinatesSchema = z.object({
-  latitude: z.coerce
-    .number()
-    .refine(
-      (lat) => Math.abs(lat) <= 90,
-      'latitude must be between -90 and 90',
-    ),
-  longitude: z.coerce
-    .number()
-    .refine(
-      (lat) => Math.abs(lat) <= 180,
-      'longitude must be between -180 and 180',
-    ),
+  latitude: latitudeSchema,
+  longitude: longitudeSchema,
 })
 
 export type CoordinatesProps = z.infer<typeof coordinatesSchema>

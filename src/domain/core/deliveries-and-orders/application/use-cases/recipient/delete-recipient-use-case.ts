@@ -33,6 +33,9 @@ export class DeleteRecipientUseCase {
     const hasPermission = Permissions.hasPermission('read_recipient', adm.role)
     if (!hasPermission) return left(new UnauthorizedError())
 
+    const recipient = await this.recipientsRepository.findById(recipientId)
+    if (!recipient) return left(new ResourceNotFoundError())
+
     await this.recipientsRepository.delete(recipientId)
 
     return right(null)

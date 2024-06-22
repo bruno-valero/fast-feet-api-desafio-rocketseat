@@ -1,5 +1,12 @@
 import { DataValidationError } from '@/core/errors/errors/data-validation-error'
 import { mask } from 'remask'
+import z from 'zod'
+
+// eslint-disable-next-line
+export const cpfInstanceSchema = z.custom<Cpf>(
+  (data) => data instanceof Cpf,
+  'must be a valide Cpf',
+)
 
 export class Cpf {
   private cpf: string

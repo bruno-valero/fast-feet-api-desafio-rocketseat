@@ -38,7 +38,12 @@ export class PrismaUpdateOrderMapper {
   }
 
   static domainToPrisma(update: UpdateOrder): PrismaUpdates {
-    const changes = JSON.stringify(update.changes)
+    console.log('before changes')
+    const changes = JSON.stringify({
+      before: update.changes.before.toJson(),
+      after: update.changes.after.toJson(),
+    })
+    console.log('afetr changes', changes)
 
     const prismaUpdate: PrismaUpdates = {
       changes,
