@@ -15,7 +15,7 @@ jobs:
         env:
           POSTGRESQL_USERNAME: postgres
           POSTGRESQL_PASSWORD: docker
-          POSTGRESQL_DATABASE: find-a-friend
+          POSTGRESQL_DATABASE: fast-feet
 
       cache:
         image: bitnami/redis
