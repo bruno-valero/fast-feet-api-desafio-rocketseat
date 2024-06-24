@@ -15,7 +15,7 @@ jobs:
         env:
           POSTGRESQL_USERNAME: postgres
           POSTGRESQL_PASSWORD: docker
-          POSTGRESQL_DATABASE: find-a-friend
+          POSTGRESQL_DATABASE: fast-feet
 
       cache:
         image: bitnami/redis
@@ -38,3 +38,7 @@ jobs:
       - run: npm run test:e2e
         env:
           DATABASE_URL: "postgresql://postgres:docker@localhost:5432/fast-feet?schema=public"
+          CLOUDFARE_R2_ACCOUNT_ID: ${{ secrets.CLOUDFARE_R2_ACCOUNT_ID }}
+          AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
+          AWS_STORAGE_API_KEY: ${{ secrets.AWS_STORAGE_API_KEY }}
+          AWS_STORAGE_SECRET_API_KEY: ${{ secrets.AWS_STORAGE_SECRET_API_KEY }}

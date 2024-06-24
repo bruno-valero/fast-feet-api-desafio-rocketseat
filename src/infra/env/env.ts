@@ -9,9 +9,6 @@ export const envSchema = z.object({
     .pipe(z.number()),
   // DATABASE (PRISMA)
   DATABASE_URL: z.string(),
-  // AUTH (JWT)
-  JWT_PRIVATE_KEY: z.string(),
-  JWT_PUBLIC_KEY: z.string(),
   // UPLOADT (AWS / CLOUDFARE)
   CLOUDFARE_R2_ACCOUNT_ID: z.string(),
   AWS_BUCKET_NAME: z.string(),
