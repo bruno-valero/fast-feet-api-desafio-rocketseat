@@ -21,6 +21,7 @@ import {
   latitudeSchema,
   longitudeSchema,
 } from '@/domain/core/deliveries-and-orders/enterprise/entities/value-objects/coordinates'
+import { OrderPresenter } from '../../../presenters/http-presenters/order-presenter'
 
 const paramsSchema = z.object({
   courierId: z.string().uuid(),
@@ -47,7 +48,10 @@ const pipeQuery = new ZodValidationPipe(querySchema)
 @Controller('/orders/:courierId/nearby')
 // @Public()
 export class FetchNearbyOrdersController {
-  constructor(private fetchNearbyOrders: FetchNearbyOrdersUseCase) {}
+  constructor(
+    private fetchNearbyOrders: FetchNearbyOrdersUseCase,
+    private presenter: OrderPresenter,
+  ) {}
 
   @Get()
   @HttpCode(200)
@@ -83,7 +87,10 @@ export class FetchNearbyOrdersController {
     if (resp.isRight()) {
       const value = resp.value
 
-      return { orders: value.orders }
+      const orders = await Promise.all(
+        value.orders.map((item) => this.presenter.present(item)),
+      )
+      return { orders }
     }
   }
 }

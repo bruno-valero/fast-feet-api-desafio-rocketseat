@@ -13,7 +13,7 @@ export async function makeFindUserRequest(
   { role, userId, token }: MakeFindUserRequestProps,
 ) {
   const resp = await request(app.getHttpServer())
-    .get(`/user/${role}/${userId}`)
+    .get(`/users/${role}/${userId}`)
     .set('Authorization', `Bearer ${token}`)
 
   return resp

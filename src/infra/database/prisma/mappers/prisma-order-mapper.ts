@@ -8,7 +8,10 @@ import { Decimal } from '@prisma/client/runtime/library'
 
 export class PrismaOrderMapper {
   static toDomain(prismaOrder: PrismaOrder): Order {
-    const address = new Address(JSON.parse(prismaOrder.address))
+    const address =
+      typeof prismaOrder.address === 'string'
+        ? new Address(JSON.parse(prismaOrder.address))
+        : prismaOrder.address
     const courierId = prismaOrder.courierId
       ? new UniqueEntityId(prismaOrder.courierId)
       : null

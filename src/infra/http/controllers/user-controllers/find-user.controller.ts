@@ -19,6 +19,8 @@ import { Courier } from '@/domain/core/deliveries-and-orders/enterprise/entities
 import { Recipient } from '@/domain/core/deliveries-and-orders/enterprise/entities/recipient'
 import { FindCourierUseCase } from '@/domain/core/deliveries-and-orders/application/use-cases/courier/find-courier-use-case'
 import { FindRecipientUseCase } from '@/domain/core/deliveries-and-orders/application/use-cases/recipient/find-recipient-use-case'
+import { CourierPresenter } from '@/infra/presenters/http-presenters/courier-presenter'
+import { RecipientPresenter } from '@/infra/presenters/http-presenters/recipient-presenter'
 
 const paramsSchema = z.object({
   role: z.enum(['recipient', 'adm', 'courier']),
@@ -35,6 +37,8 @@ export class FindUserController {
   constructor(
     private findCourier: FindCourierUseCase,
     private findRecipient: FindRecipientUseCase,
+    private courierPresenter: CourierPresenter,
+    private recipientPresenter: RecipientPresenter,
   ) {}
 
   @Get()
@@ -77,11 +81,17 @@ export class FindUserController {
     }
 
     if (resp.isRight()) {
-      const value = resp.value[role]
+      if (role === 'courier') {
+        const value = (resp.value as { courier: Courier }).courier
+        const courier = await this.courierPresenter.present(value)
 
-      return {
-        [role]: value,
+        return { courier }
       }
+      const value = (resp.value as { recipient: Recipient }).recipient
+
+      const recipient = await this.recipientPresenter.present(value)
+
+      return { recipient }
     }
   }
 }

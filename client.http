@@ -2,10 +2,10 @@
 @authToken = {{authenticate.response.body.token}}
 
 
-@firstCourierId = {{fetchCourier.response.body.couriers[0]._id._value}}
-@firstRecipientId = {{fetchRecipient.response.body.recipients[0]._id._value}}
+@firstCourierId = {{fetchCourier.response.body.couriers[0].id}}
+@firstRecipientId = {{fetchRecipient.response.body.recipients[0].id}}
 
-@firstOrderId = {{fetchAllOrders.response.body.orders[0]._id._value}}
+@firstOrderId = {{fetchAllOrders.response.body.orders[0].id}}
 
 @currentLatitude = -23.3963853
 @currentLongitude = -46.3086881

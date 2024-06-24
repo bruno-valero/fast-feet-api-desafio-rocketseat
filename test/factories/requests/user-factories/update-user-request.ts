@@ -17,7 +17,7 @@ export async function makeUpdateUserRequest(
   { role, userId, token, body }: MakeUpdateUserRequestProps,
 ) {
   const resp = await request(app.getHttpServer())
-    .patch(`/users/${role}/${userId}`)
+    .put(`/users/${role}/${userId}`)
     .set('Authorization', `Bearer ${token}`)
     .send(body)
 

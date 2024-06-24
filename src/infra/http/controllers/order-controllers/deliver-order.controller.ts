@@ -66,7 +66,6 @@ export class DeliverOrderController {
       if (value instanceof UnauthorizedError) {
         throw new UnauthorizedException({ message: value.message })
       }
-
       throw new BadRequestException()
     }
 

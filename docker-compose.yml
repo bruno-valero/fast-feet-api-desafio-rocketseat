@@ -14,14 +14,12 @@ services:
     volumes:
       - ./data/pg:/data/postgres
 
-  # cache:
-  #   container_name: nest-clean-cache
-  #   image: bitnami/redis
-  #   ports:
-  #     - 6379:6379
-  #   environment:
-  #     - ALLOW_EMPTY_PASSWORD=yes
-  #     # - REDIS_DATABASE=0
-  #     # - REDIS_MASTER_PORT_NUMBER=6379
-  #   volumes:
-  #     - ./data/redis:/data
+  cache:
+    container_name: fast-feet-cache
+    image: bitnami/redis
+    ports:
+      - 6379:6379
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - ./data/redis:/data

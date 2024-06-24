@@ -19,11 +19,13 @@ import { FetchRecipientOrdersUseCase } from '@/domain/core/deliveries-and-orders
 import { FindOrderUseCase } from '@/domain/core/deliveries-and-orders/application/use-cases/order/find-order-use-case'
 import { MarkOrderAsAwaitingForPickupUseCase } from '@/domain/core/deliveries-and-orders/application/use-cases/order/mark-order-as-awaiting-for-pickup-use-case'
 import { ReturnOrderUseCase } from '@/domain/core/deliveries-and-orders/application/use-cases/order/return-order-use-case'
+import { UploadOrderDeliveryPhotoUseCase } from '@/domain/core/deliveries-and-orders/application/use-cases/order/upload-order-delivery-photo-use-case'
 import { DeleteRecipientUseCase } from '@/domain/core/deliveries-and-orders/application/use-cases/recipient/delete-recipient-use-case'
 import { FetchRecipientsUseCase } from '@/domain/core/deliveries-and-orders/application/use-cases/recipient/fetch-recipients-use-case'
 import { FindRecipientUseCase } from '@/domain/core/deliveries-and-orders/application/use-cases/recipient/find-recipient-use-case'
 import { UpdateRecipientPasswordUseCase } from '@/domain/core/deliveries-and-orders/application/use-cases/recipient/update-recipient-password-use-case'
 import { UpdateRecipientUseCase } from '@/domain/core/deliveries-and-orders/application/use-cases/recipient/update-recipient-use-case'
+import ReadNotificationUseCase from '@/domain/generic/notification/application/use-cases/read-notification'
 import { Provider } from '@nestjs/common'
 
 const admUseCases: Provider[] = [AuthenticateAdmUseCase]
@@ -50,6 +52,7 @@ const orderUseCases: Provider[] = [
   FindOrderUseCase,
   MarkOrderAsAwaitingForPickupUseCase,
   ReturnOrderUseCase,
+  UploadOrderDeliveryPhotoUseCase,
 ]
 
 const recipientUseCases: Provider[] = [
@@ -62,9 +65,12 @@ const recipientUseCases: Provider[] = [
   UpdateRecipientUseCase,
 ]
 
+const notificationUseCases: Provider[] = [ReadNotificationUseCase]
+
 export const useCases: Provider[] = [
   ...admUseCases,
   ...courierUseCases,
   ...orderUseCases,
   ...recipientUseCases,
+  ...notificationUseCases,
 ]

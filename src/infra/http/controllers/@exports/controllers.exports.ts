@@ -15,6 +15,8 @@ import { FetchOrdersController } from '../order-controllers/fetch-orders.control
 import { FindOrderController } from '../order-controllers/find-order.controller'
 import { MarkOrderAsAwaitingForPickupController } from '../order-controllers/mark-order-as-awaiting-for-pickup.controller'
 import { ReturnOrderController } from '../order-controllers/return-order.controller'
+import { UploadOrderPhotoController } from '../order-controllers/upload-order-delivered-photo.controller'
+import { ReadNotificationController } from '../notification-controllers/read-notification.controller'
 
 const authAndRegisterControllers: NonNullable<ModuleMetadata['controllers']> = [
   AuthenticateController,
@@ -39,10 +41,16 @@ const orderControllers: NonNullable<ModuleMetadata['controllers']> = [
   FindOrderController,
   MarkOrderAsAwaitingForPickupController,
   ReturnOrderController,
+  UploadOrderPhotoController,
+]
+
+const notificationController: NonNullable<ModuleMetadata['controllers']> = [
+  ReadNotificationController,
 ]
 
 export const controllers: NonNullable<ModuleMetadata['controllers']> = [
   ...authAndRegisterControllers,
   ...userControllers,
   ...orderControllers,
+  ...notificationController,
 ]
