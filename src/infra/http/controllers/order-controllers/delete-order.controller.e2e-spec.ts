@@ -1,0 +1,127 @@
+import { Cpf } from '@/domain/core/deliveries-and-orders/enterprise/entities/value-objects/cpf'
+import { AppModule } from '@/infra/app.module'
+import { BcryptEncrypter } from '@/infra/cryptography/bcrypt-encrypter'
+import { PrismaAdmMapper } from '@/infra/database/prisma/mappers/prisma-adm-mapper'
+import { PrismaService } from '@/infra/database/prisma/prisma.service'
+import { INestApplication } from '@nestjs/common'
+import { Test } from '@nestjs/testing'
+import { makeAdm } from 'test/factories/entities/makeAdm'
+import { makeAuthenticateRequest } from '../../../../../test/factories/requests/auth-and-register-factories/make-authenticate-request'
+import { makeRegisterRequest } from '../../../../../test/factories/requests/auth-and-register-factories/make-register-request'
+import { makeCreateOrderRequest } from '../../../../../test/factories/requests/order-request-factories/make-create-order-request'
+import { makeDeleteOrderRequest } from '../../../../../test/factories/requests/order-request-factories/make-delete-order-request'
+
+describe('delete order controller', () => {
+  let app: INestApplication
+  let prisma: PrismaService
+
+  beforeAll(async () => {
+    const moduleRef = await Test.createTestingModule({
+      imports: [AppModule],
+    }).compile()
+
+    app = moduleRef.createNestApplication()
+    prisma = moduleRef.get(PrismaService)
+
+    await app.init()
+  })
+
+  test('DELETE /orders/:id', async () => {
+    const encrypter = new BcryptEncrypter()
+    await prisma.prismaUser.create({
+      data: PrismaAdmMapper.domainToPrisma(
+        makeAdm({
+          cpf: new Cpf('20635940078'),
+          password: await encrypter.hash('123'),
+        }),
+      ),
+    })
+
+    const authAdmResp = await makeAuthenticateRequest(app, {
+      body: {
+        cpf: '20635940078',
+        password: '123',
+        role: 'adm',
+      },
+    })
+
+    const token = authAdmResp.body.token
+
+    expect(authAdmResp.statusCode).toEqual(200)
+    expect(token).toEqual(expect.any(String))
+
+    const createRecipientResp = await makeRegisterRequest(app, {
+      token,
+      body: {
+        cpf: '66967772023',
+        name: 'recipient teste',
+        password: '123',
+        role: 'recipient',
+      },
+    })
+
+    expect(createRecipientResp.statusCode).toEqual(201)
+
+    const createCourierResp = await makeRegisterRequest(app, {
+      token,
+      body: {
+        cpf: '29241359072',
+        name: 'courier teste',
+        password: '123',
+        role: 'courier',
+      },
+    })
+
+    expect(createCourierResp.statusCode).toEqual(201)
+
+    const recipient = (
+      await prisma.prismaUser.findMany({
+        where: {
+          role: 'recipient',
+        },
+      })
+    )[0]
+
+    const courier = (
+      await prisma.prismaUser.findMany({
+        where: {
+          role: 'courier',
+        },
+      })
+    )[0]
+
+    const createOrderResp = await makeCreateOrderRequest(app, {
+      token,
+      body: {
+        address: {
+          cep: '00447590',
+          street: 'rua dos bobos',
+          number: 'numero zero',
+          city: 'nao tinha cidade',
+          neighborhood: 'nao tinha bairro',
+          state: 'SP',
+          coordinates: {
+            latitude: 1,
+            longitude: 1,
+          },
+        },
+        courierId: courier.id,
+        recipientId: recipient.id,
+      },
+    })
+
+    const orders = await prisma.prismaOrder.findMany()
+    expect(orders).toHaveLength(1)
+
+    const deleteOrderResp = await makeDeleteOrderRequest(app, {
+      orderId: orders[0].id,
+      token,
+    })
+
+    const ordersUpdated = await prisma.prismaOrder.findMany()
+
+    expect(deleteOrderResp.statusCode).toEqual(204)
+    expect(createOrderResp.statusCode).toEqual(201)
+    expect(ordersUpdated).toHaveLength(0)
+  })
+})

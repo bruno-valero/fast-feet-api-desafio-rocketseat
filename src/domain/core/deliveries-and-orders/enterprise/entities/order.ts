@@ -145,8 +145,12 @@ export class Order extends AggregateRoot<OrderProps> {
     return JSON.stringify(data, null, spacing)
   }
 
-  parseFromJson(json: string) {
-    const data = JSON.parse(json) as OrderToJsonData
+  static parseFromJson(json: string) {
+    let data = JSON.parse(json) as OrderToJsonData
+
+    if (typeof data === 'string') {
+      data = JSON.parse(data)
+    }
 
     const dateFrom = (data: string | null) => new Date(data ?? '')
 

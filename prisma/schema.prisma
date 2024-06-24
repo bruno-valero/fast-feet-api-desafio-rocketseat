@@ -15,7 +15,7 @@ datasource db {
 
 model PrismaOrder {
   id             String    @id @default(uuid())
-  recipientId    String    @map("recipient_d")
+  recipientId    String    @map("recipient_id")
   courierId      String?   @map("courier_id")
   address        String
   latitude       Decimal
@@ -52,9 +52,10 @@ model PrismaUser {
   createdAt   DateTime  @map("created_at")
   updatedAt   DateTime? @map("updated_at")
 
-  recipient PrismaOrder[]   @relation("recipient")
-  courier   PrismaOrder[]   @relation("courier")
-  updates   PrismaUpdates[]
+  recipient     PrismaOrder[]        @relation("recipient")
+  courier       PrismaOrder[]        @relation("courier")
+  updates       PrismaUpdates[]
+  notifications PrismaNotification[]
 
   @@map("users")
 }
@@ -86,4 +87,19 @@ model PrismaAttachment {
   orderId String? @unique
 
   order PrismaOrder?
+
+  @@map("attachments")
+}
+
+model PrismaNotification {
+  id          String    @id @default(uuid())
+  recipientId String    @map("recipient_id")
+  title       String
+  content     String
+  createdAt   DateTime  @map("created_at")
+  readAt      DateTime?
+
+  recipient PrismaUser @relation(fields: [recipientId], references: [id])
+
+  @@map("notifications")
 }

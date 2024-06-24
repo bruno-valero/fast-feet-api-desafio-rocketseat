@@ -16,10 +16,10 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { TokenPayload } from '@/infra/auth/jwt.strategy'
 import { CollectOrderUseCase } from '@/domain/core/deliveries-and-orders/application/use-cases/order/collect-order-use-case'
-import { OrderAwaitingPickupError } from '@/core/errors/errors/order-errors/order-awaiting-for-pickup-error'
 import { OrderIsClosedError } from '@/core/errors/errors/order-errors/order-is-closed-error'
 import { InternalServerError } from '@/core/errors/errors/internal-server-error'
 import { OrderAlreadyCollectedError } from '@/core/errors/errors/order-errors/order-already-collected-error'
+import { OrderNotAwaitingPickupError } from '@/core/errors/errors/order-errors/order-not-awaiting-for-pickup-error'
 
 const paramsSchema = z.object({
   id: z.string().uuid(),
@@ -66,9 +66,8 @@ export class CollectOrderController {
         throw new BadRequestException({ message: value.message })
       }
 
-      const isAwaitingError = value instanceof OrderAwaitingPickupError
-      const isClosedError = value instanceof OrderIsClosedError
-
+      const isAwaitingError = value.constructor === OrderNotAwaitingPickupError
+      const isClosedError = value.constructor === OrderIsClosedError
       const isOrderError = isAwaitingError || isClosedError
 
       if (isOrderError) {

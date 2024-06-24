@@ -6,11 +6,11 @@ import { AdmsRepository } from '../../repositories/adm-repositories/adms-reposit
 import UniqueEntityId from '@/core/entities/unique-entity-id'
 import { OrderUpdatesRepository } from '../../repositories/order-repositories/order-updates-repository'
 import { OrdersRepository } from '../../repositories/order-repositories/orders-repository'
-import { OrderAwaitingPickupError } from '@/core/errors/errors/order-errors/order-awaiting-for-pickup-error'
 import { OrderIsClosedError } from '@/core/errors/errors/order-errors/order-is-closed-error'
 import { InternalServerError } from '@/core/errors/errors/internal-server-error'
 import { Injectable } from '@nestjs/common'
 import { OrderAlreadyCollectedError } from '@/core/errors/errors/order-errors/order-already-collected-error'
+import { OrderNotAwaitingPickupError } from '@/core/errors/errors/order-errors/order-not-awaiting-for-pickup-error'
 
 export interface CollectOrderUseCaseRequest {
   orderId: string
@@ -20,7 +20,7 @@ export interface CollectOrderUseCaseRequest {
 export type CollectOrderUseCaseResponse = Either<
   | ResourceNotFoundError
   | UnauthorizedError
-  | OrderAwaitingPickupError
+  | OrderNotAwaitingPickupError
   | OrderIsClosedError
   | OrderAlreadyCollectedError
   | InternalServerError,

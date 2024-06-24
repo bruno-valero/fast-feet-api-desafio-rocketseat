@@ -6,12 +6,23 @@ import { execSync } from 'node:child_process'
 import { PrismaClient } from '@prisma/client'
 import { DomainEvents } from '@/core/events/domain-events'
 
+import { Redis } from 'ioredis'
+import { envSchema } from '@/infra/env/env'
+
 config({ path: '.env', override: true })
 config({ path: '.env.test', override: true })
 
+const env = envSchema.parse(process.env)
+
+const redis = new Redis({
+  host: env.REDIS_HOST,
+  port: env.REDIS_PORT,
+  db: env.REDIS_DB,
+})
+
 const prisma = new PrismaClient()
 
-const DATABASE_URL = process.env.DATABASE_URL
+const DATABASE_URL = env.DATABASE_URL
 if (!DATABASE_URL) throw new Error('DATABASE_URL not found')
 const schema = randomUUID()
 
@@ -23,6 +34,8 @@ beforeAll(async () => {
   DomainEvents.shouldRun = false
 
   execSync('npx prisma migrate deploy')
+
+  await redis.flushdb()
 })
 
 afterAll(async () => {

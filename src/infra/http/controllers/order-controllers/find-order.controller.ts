@@ -15,6 +15,7 @@ import { ResourceNotFoundError } from '@/core/errors/errors/resource-not-found-e
 import { CurrentUser } from '@/infra/auth/current-user-decorator'
 import { TokenPayload } from '@/infra/auth/jwt.strategy'
 import { FindOrderUseCase } from '@/domain/core/deliveries-and-orders/application/use-cases/order/find-order-use-case'
+import { OrderPresenter } from '../../../presenters/http-presenters/order-presenter'
 
 const paramsSchema = z.object({
   id: z.string().uuid(),
@@ -41,7 +42,10 @@ const pipeParams = new ZodValidationPipe(paramsSchema)
 @Controller('/orders/:id/find')
 // @Public()
 export class FindOrderController {
-  constructor(private findOrder: FindOrderUseCase) {}
+  constructor(
+    private findOrder: FindOrderUseCase,
+    private presenter: OrderPresenter,
+  ) {}
 
   @Get()
   @HttpCode(200)
@@ -72,7 +76,8 @@ export class FindOrderController {
     if (resp.isRight()) {
       const value = resp.value
 
-      return { order: value.order }
+      const order = await this.presenter.present(value.order)
+      return { order }
     }
   }
 }

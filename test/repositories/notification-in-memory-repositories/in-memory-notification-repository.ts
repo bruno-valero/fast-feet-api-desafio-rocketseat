@@ -11,13 +11,11 @@ export class InMemoryNotificationsRepository
     this.items.push(notification)
   }
 
-  async getById(
-    notificationId: string,
-  ): Promise<{ notification: Notification } | null> {
+  async getById(notificationId: string): Promise<Notification | null> {
     const notification =
       this.items.filter((item) => item.id.value === notificationId)[0] ?? null
 
-    return { notification }
+    return notification
   }
 
   async update(notification: Notification): Promise<void> {

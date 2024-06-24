@@ -21,6 +21,7 @@ import { FetchOrdersUseCase } from '@/domain/core/deliveries-and-orders/applicat
 import { userRoleSchema } from '@/domain/core/deliveries-and-orders/enterprise/entities/abstract/user'
 import { Either } from '@/core/either'
 import { Order } from '@/domain/core/deliveries-and-orders/enterprise/entities/order'
+import { OrderPresenter } from '../../../presenters/http-presenters/order-presenter'
 
 const paramsSchema = z.object({
   role: z.union([userRoleSchema, z.enum(['all'])]),
@@ -50,6 +51,7 @@ export class FetchOrdersController {
     private fetchOrders: FetchOrdersUseCase,
     private fetchCourierOrders: FetchCourierOrdersUseCase,
     private fetchRecipientOrders: FetchRecipientOrdersUseCase,
+    private presenter: OrderPresenter,
   ) {}
 
   @Get()
@@ -104,7 +106,10 @@ export class FetchOrdersController {
     if (resp.isRight()) {
       const value = resp.value
 
-      return { orders: value.orders }
+      const orders = await Promise.all(
+        value.orders.map((item) => this.presenter.present(item)),
+      )
+      return { orders }
     }
   }
 }

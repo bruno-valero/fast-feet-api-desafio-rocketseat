@@ -14,11 +14,12 @@ export interface MakeRegisterRequestProps {
 
 export async function makeRegisterRequest(
   app: INestApplication,
-  { token }: MakeRegisterRequestProps,
+  { token, body }: MakeRegisterRequestProps,
 ) {
   const resp = await request(app.getHttpServer())
-    .patch(`/register`)
+    .post(`/register`)
     .set('Authorization', `Bearer ${token}`)
+    .send(body)
 
   return resp
 }

@@ -31,7 +31,7 @@ export default class ReadNotificationUseCase {
 
     if (!notificationResp) return left(new ResourceNotFoundError())
 
-    const { notification } = notificationResp
+    const notification = notificationResp
 
     if (notification.recipientId.value !== recipientId)
       return left(new UnauthorizedError())

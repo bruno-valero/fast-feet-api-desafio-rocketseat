@@ -4,11 +4,15 @@ import { PrismaService } from '@/infra/database/prisma/prisma.service'
 import { INestApplication } from '@nestjs/common'
 import { Test } from '@nestjs/testing'
 import { makeAdm } from 'test/factories/entities/makeAdm'
-import { makeAuthenticateRequest } from '../../factories/requests/auth-and-register-factories/make-authenticate-request'
+import { makeAuthenticateRequest } from '../../../../../test/factories/requests/auth-and-register-factories/make-authenticate-request'
 import { Cpf } from '@/domain/core/deliveries-and-orders/enterprise/entities/value-objects/cpf'
-import { makeRegisterRequest } from '../../factories/requests/auth-and-register-factories/make-register-request'
-import { makeCreateOrderRequest } from '../../factories/requests/order-request-factories/make-create-order-request'
-import { makeCollectOrderRequest } from '../../factories/requests/order-request-factories/make-collect-order-request'
+import { makeRegisterRequest } from '../../../../../test/factories/requests/auth-and-register-factories/make-register-request'
+import { makeCreateOrderRequest } from '../../../../../test/factories/requests/order-request-factories/make-create-order-request'
+import { makeCollectOrderRequest } from '../../../../../test/factories/requests/order-request-factories/make-collect-order-request'
+import { BcryptEncrypter } from '@/infra/cryptography/bcrypt-encrypter'
+import { makeMarkOrderAsAwaitingForPickupRequest } from '../../../../../test/factories/requests/order-request-factories/make-mark-order-as-awaiting-for-pickup-request'
+import { waitFor } from 'test/lib/await-for'
+import { DomainEvents } from '@/core/events/domain-events'
 
 describe('collect order controller', () => {
   let app: INestApplication
@@ -22,15 +26,18 @@ describe('collect order controller', () => {
     app = moduleRef.createNestApplication()
     prisma = moduleRef.get(PrismaService)
 
+    DomainEvents.shouldRun = true
+
     await app.init()
   })
 
   test('PATCH /orders/:id/collect', async () => {
+    const encrypter = new BcryptEncrypter()
     await prisma.prismaUser.create({
       data: PrismaAdmMapper.domainToPrisma(
         makeAdm({
           cpf: new Cpf('20635940078'),
-          password: '123',
+          password: await encrypter.hash('123'),
         }),
       ),
     })
@@ -45,6 +52,9 @@ describe('collect order controller', () => {
 
     const token = authAdmResp.body.token
 
+    expect(authAdmResp.statusCode).toEqual(200)
+    expect(token).toEqual(expect.any(String))
+
     const createRecipientResp = await makeRegisterRequest(app, {
       token,
       body: {
@@ -55,6 +65,8 @@ describe('collect order controller', () => {
       },
     })
 
+    expect(createRecipientResp.statusCode).toEqual(201)
+
     const createCourierResp = await makeRegisterRequest(app, {
       token,
       body: {
@@ -64,6 +76,8 @@ describe('collect order controller', () => {
         role: 'courier',
       },
     })
+
+    expect(createCourierResp.statusCode).toEqual(201)
 
     const recipient = (
       await prisma.prismaUser.findMany({
@@ -85,7 +99,7 @@ describe('collect order controller', () => {
       token,
       body: {
         address: {
-          cep: '004475900',
+          cep: '00447590',
           street: 'rua dos bobos',
           number: 'numero zero',
           city: 'nao tinha cidade',
@@ -101,7 +115,17 @@ describe('collect order controller', () => {
       },
     })
 
+    expect(createOrderResp.statusCode).toEqual(201)
+
     const order = (await prisma.prismaOrder.findMany())[0]
+
+    const awaitingOrderPickupResp =
+      await makeMarkOrderAsAwaitingForPickupRequest(app, {
+        orderId: order.id,
+        token,
+      })
+
+    expect(awaitingOrderPickupResp.statusCode).toEqual(204)
 
     const collectOrderResp = await makeCollectOrderRequest(app, {
       orderId: order.id,
@@ -110,11 +134,12 @@ describe('collect order controller', () => {
 
     const orderUpdated = (await prisma.prismaOrder.findMany())[0]
 
-    expect(authAdmResp.statusCode).toEqual(200)
-    expect(createRecipientResp.statusCode).toEqual(201)
-    expect(createCourierResp.statusCode).toEqual(201)
-    expect(createOrderResp.statusCode).toEqual(201)
     expect(collectOrderResp.statusCode).toEqual(204)
     expect(orderUpdated.collected).toEqual(expect.any(Date))
+
+    await waitFor(async () => {
+      const notifications = await prisma.prismaNotification.findMany()
+      expect(notifications).toHaveLength(2)
+    })
   })
 })

@@ -19,6 +19,8 @@ import { FetchCouriersUseCase } from '@/domain/core/deliveries-and-orders/applic
 import { FetchRecipientsUseCase } from '@/domain/core/deliveries-and-orders/application/use-cases/recipient/fetch-recipients-use-case'
 import { Courier } from '@/domain/core/deliveries-and-orders/enterprise/entities/courier'
 import { Recipient } from '@/domain/core/deliveries-and-orders/enterprise/entities/recipient'
+import { CourierPresenter } from '@/infra/presenters/http-presenters/courier-presenter'
+import { RecipientPresenter } from '@/infra/presenters/http-presenters/recipient-presenter'
 
 const paramsSchema = z.object({
   role: z.enum(['recipient', 'adm', 'courier']),
@@ -34,6 +36,8 @@ export class FetchUsersController {
   constructor(
     private fetchCouriers: FetchCouriersUseCase,
     private fetchRecipients: FetchRecipientsUseCase,
+    private courierPresenter: CourierPresenter,
+    private recipientPresenter: RecipientPresenter,
   ) {}
 
   @Get()
@@ -74,11 +78,22 @@ export class FetchUsersController {
     }
 
     if (resp.isRight()) {
-      const value = resp.value[role + 's']
+      if (role === 'courier') {
+        const value = (resp.value as { couriers: Courier[] }).couriers
 
-      return {
-        [role + 's']: value,
+        const couriers = await Promise.all(
+          value.map(async (item) => await this.courierPresenter.present(item)),
+        )
+
+        return { couriers }
       }
+      const value = (resp.value as { recipients: Recipient[] }).recipients
+
+      const recipients = await Promise.all(
+        value.map(async (item) => await this.recipientPresenter.present(item)),
+      )
+
+      return { recipients }
     }
   }
 }
